@@ -27,3 +27,12 @@ exports.createUser = catchAsync(async (req, res) => {
     data: user,
   })
 })
+
+exports.getUserById = catchAsync(async (req, res) => {
+  const user = await User.findByPk(req.params.id)
+
+  res.status(200).json({
+    status: 'success',
+    data: user,
+  })
+})
