@@ -50,3 +50,17 @@ exports.updateUser = catchAsync(async (req, res) => {
     data: user,
   })
 })
+
+exports.deleteUser = catchAsync(async (req, res) => {
+  const user = await User.findByPk(req.params.id)
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User not found',
+    })
+  }
+  await user.destroy()
+  res.status(204).json({
+    status: 'success',
+  })
+})
