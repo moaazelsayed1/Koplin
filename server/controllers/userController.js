@@ -12,17 +12,15 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 })
 
 exports.createUser = catchAsync(async (req, res) => {
-  // Get the user data from the request body
   const { username, email, password } = req.body
 
-  // Create the new user in the database
   const user = await User.create({
     username,
     email,
     password,
   })
 
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     data: user,
   })
@@ -31,6 +29,22 @@ exports.createUser = catchAsync(async (req, res) => {
 exports.getUserById = catchAsync(async (req, res) => {
   const user = await User.findByPk(req.params.id)
 
+  res.status(200).json({
+    status: 'success',
+    data: user,
+  })
+})
+
+exports.updateUser = catchAsync(async (req, res) => {
+  const user = await User.findByPk(req.params.id)
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User not found',
+    })
+  }
+  console.log(user)
+  await user.update(req.body)
   res.status(200).json({
     status: 'success',
     data: user,
