@@ -1,31 +1,29 @@
 const path = require('path')
 const User = require(path.join(__dirname, '..', 'models', 'user'))
+const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
 
-exports.getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.findAll()
-    res.status(200).json(users)
-  } catch (error) {
-    next(error)
-  }
-}
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.findAll()
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: users,
+  })
+})
 
-exports.createUser = async (req, res) => {
-  try {
-    // Get the user data from the request body
-    const { username, email, password } = req.body
+exports.createUser = catchAsync(async (req, res) => {
+  // Get the user data from the request body
+  const { username, email, password } = req.body
 
-    // Create the new user in the database
-    const user = await User.create({
-      username,
-      email,
-      password,
-    })
+  // Create the new user in the database
+  const user = await User.create({
+    username,
+    email,
+    password,
+  })
 
-    // Return the newly created user
-    res.status(201).json(user)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Unable to create user' })
-  }
-}
+  res.status(200).json({
+    status: 'success',
+    data: user,
+  })
+})
