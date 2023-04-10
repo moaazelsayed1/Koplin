@@ -1,5 +1,6 @@
+const path = require('path')
+const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
-const sequelize = require('../database')
 
 const Topic = sequelize.define('Topic', {
   topic_id: {
