@@ -1,6 +1,5 @@
 const path = require('path')
 const express = require('express')
-const Task = require(path.join(__dirname, '..', 'models', 'task'))
 const taskController = require(path.join(
   __dirname,
   '..',
