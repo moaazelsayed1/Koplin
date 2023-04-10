@@ -46,7 +46,7 @@ exports.getOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByPk(req.params.id)
     if (!doc) {
-      return next(new AppError('no tour found with that id', 404))
+      return next(new AppError('no document found with that id', 404))
     }
 
     res.status(200).json({
