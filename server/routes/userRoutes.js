@@ -7,8 +7,13 @@ const userController = require(path.join(
   'controllers',
   'userController'
 ))
+const authController = require(path.join(
+  path.join(__dirname, '..', 'controllers', 'authController')
+))
 
 const router = express.Router()
+
+router.post('/login', authController.login)
 
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)
