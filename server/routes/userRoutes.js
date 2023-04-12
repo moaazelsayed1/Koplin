@@ -14,6 +14,7 @@ const authController = require(path.join(
 const router = express.Router()
 
 router.post('/login', authController.login)
+router.post('/signup', authController.signup)
 
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)

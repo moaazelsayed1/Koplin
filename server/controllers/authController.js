@@ -50,3 +50,13 @@ exports.login = catchAsync(async (req, res, next) => {
     return res.status(401).json({ error: 'Invalid email or password' })
   }
 })
+
+exports.signup = catchAsync(async (req, res, next) => {
+  const newUser = await User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+  })
+
+  createAndSendToken(newUser, 201, res)
+})
