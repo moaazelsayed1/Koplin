@@ -2,8 +2,9 @@ const path = require('path')
 const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 
+const Task = require(path.join(__dirname, 'task'))
 const User = require('./user')
-const Board = require('./board')
+
 const Task_Comment = sequelize.define('Task_Comment', {
   comment_id: {
     type: DataTypes.INTEGER,
