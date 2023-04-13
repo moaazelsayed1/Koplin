@@ -33,6 +33,12 @@ const User = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    passwordResetToken: {
+      type: DataTypes.STRING,
+    },
+    passwordResetExpires: {
+      type: DataTypes.DATE,
+    },
   },
   {
     hooks: {

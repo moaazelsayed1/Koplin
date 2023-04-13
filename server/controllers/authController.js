@@ -100,3 +100,20 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser
   next()
 })
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findByPk(req.user.dataValues.user_id)
+
+  if (!user) {
+    return next(new appError('You are not logged in.', 401))
+  }
+
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new appError('Your current password is wrong.', 401))
+  }
+
+  user.password = req.body.password
+  await user.save()
+
+  createAndSendToken(user, 200, res)
+})
