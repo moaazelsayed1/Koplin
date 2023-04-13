@@ -29,6 +29,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    changedPasswordAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     hooks: {
@@ -38,6 +42,7 @@ const User = sequelize.define(
       beforeUpdate: async (user) => {
         if (user.changed('password')) {
           user.password = await bcrypt.hash(user.password, 12)
+          user.changedPasswordAt = Date.now()
         }
       },
     },
@@ -49,6 +54,19 @@ User.prototype.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword)
+}
+
+User.prototype.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    )
+
+    return JWTTimestamp < changedTimestamp
+  }
+
+  return false
 }
 
 module.exports = User
