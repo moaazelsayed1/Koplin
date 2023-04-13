@@ -33,6 +33,7 @@ const User = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    //  migration
     passwordResetToken: {
       type: DataTypes.STRING,
     },
@@ -66,7 +67,7 @@ User.prototype.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
-      10
+      11
     )
 
     return JWTTimestamp < changedTimestamp
