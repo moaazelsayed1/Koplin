@@ -2,6 +2,7 @@ const path = require('path')
 const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 
 const User = sequelize.define(
   'User',
@@ -77,3 +78,16 @@ User.prototype.changedPasswordAfter = function (JWTTimestamp) {
 }
 
 module.exports = User
+
+User.prototype.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000
+
+  return resetToken
+}
