@@ -2,6 +2,11 @@ const path = require('path')
 const User = require(path.join(__dirname, '..', 'models', 'user'))
 const Factory = require(path.join(__dirname, 'handlerFactory'))
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.dataValues.user_id
+  next()
+}
+
 exports.getAllUsers = Factory.getAll(User)
 
 exports.createUser = Factory.createOne(User)

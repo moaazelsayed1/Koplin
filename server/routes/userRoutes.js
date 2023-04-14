@@ -24,6 +24,13 @@ router.patch(
 
 router.post('/forgotPassword', authController.forgotPassword)
 
+router.get(
+  '/me',
+  authController.protect,
+  userController.getMe,
+  userController.getUserById
+)
+
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)
 
