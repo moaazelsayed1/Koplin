@@ -18,6 +18,25 @@ exports.addUserToTopic = catchAsync(async (req, res) => {
   })
 })
 
+exports.getTopicsByUser = catchAsync(async (req, res) => {
+  const userId = req.params.userId
+
+  const topicUsers = await Topic_User.findAll({
+    where: { user_id: userId },
+    include: [{ model: Topic }],
+  })
+
+  const topics = topicUsers.map((tu) => tu.Topic)
+
+  res.status(200).json({
+    status: 'success',
+    results: topics.length,
+    data: {
+      topics,
+    },
+  })
+})
+
 exports.getAllTopics = Factory.getAll(Topic)
 
 exports.createTopic = Factory.createOne(Topic)
