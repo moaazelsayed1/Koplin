@@ -1,0 +1,86 @@
+{
+  "hash": "58be5944",
+  "browserHash": "ac016458",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "59ba88fd",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "665a5ce9",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "0786740a",
+      "needsInterop": false
+    },
+    "primereact/inputtext": {
+      "src": "../../node_modules/primereact/inputtext/inputtext.esm.js",
+      "file": "primereact_inputtext.js",
+      "fileHash": "11c17ce1",
+      "needsInterop": false
+    },
+    "primereact/progressspinner": {
+      "src": "../../node_modules/primereact/progressspinner/progressspinner.esm.js",
+      "file": "primereact_progressspinner.js",
+      "fileHash": "f04a733f",
+      "needsInterop": false
+    },
+    "primereact/password": {
+      "src": "../../node_modules/primereact/password/password.esm.js",
+      "file": "primereact_password.js",
+      "fileHash": "64979bbd",
+      "needsInterop": false
+    },
+    "primereact/button": {
+      "src": "../../node_modules/primereact/button/button.esm.js",
+      "file": "primereact_button.js",
+      "fileHash": "a3caabdc",
+      "needsInterop": false
+    },
+    "primereact/divider": {
+      "src": "../../node_modules/primereact/divider/divider.esm.js",
+      "file": "primereact_divider.js",
+      "fileHash": "dc5e7427",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "d75cb35e",
+      "needsInterop": false
+    },
+    "query-string": {
+      "src": "../../node_modules/query-string/index.js",
+      "file": "query-string.js",
+      "fileHash": "e47ae431",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-BAWPKKXI": {
+      "file": "chunk-BAWPKKXI.js"
+    },
+    "chunk-5V5YKI3M": {
+      "file": "chunk-5V5YKI3M.js"
+    },
+    "chunk-2MRMY2VI": {
+      "file": "chunk-2MRMY2VI.js"
+    },
+    "chunk-YPJCFCBD": {
+      "file": "chunk-YPJCFCBD.js"
+    },
+    "chunk-6DDWND5A": {
+      "file": "chunk-6DDWND5A.js"
+    },
+    "chunk-4EOJPDL2": {
+      "file": "chunk-4EOJPDL2.js"
+    }
+  }
+}

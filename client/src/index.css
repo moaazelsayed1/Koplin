@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: (--font-family);
+}
+
+.p-float-label input {
+    width: 100%;
+}
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+    -webkit-appearance: button;
+    background-color: #ec4a0a;
+    background-image: none;
+}
+
+@layer components {
+    .inputpw {
+        @apply h-10 w-full flex justify-stretch drop-shadow-sm;
+    }
+
+    .h3 {
+        @apply text-2xl font-bold text-gray-800;
+    }
+}
