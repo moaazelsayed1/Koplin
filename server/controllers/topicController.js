@@ -1,6 +1,22 @@
 const path = require('path')
 const Topic = require(path.join(__dirname, '..', 'models', 'topic'))
 const Factory = require(path.join(__dirname, 'handlerFactory'))
+const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
+const Topic_User = require(path.join(__dirname, '..', 'models', 'topicUser'))
+
+exports.addUserToTopic = catchAsync(async (req, res) => {
+  const { topicId, userId } = req.params
+  const topicUser = await Topic_User.create({
+    topic_id: topicId,
+    user_id: userId,
+  })
+  res.status(201).json({
+    status: 'success',
+    data: {
+      topicUser,
+    },
+  })
+})
 
 exports.getAllTopics = Factory.getAll(Topic)
 

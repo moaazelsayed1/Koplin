@@ -9,6 +9,8 @@ const topicController = require(path.join(
 
 const router = express.Router()
 
+router.get('/:topicId/user/:userId', topicController.addUserToTopic)
+
 router.get('/', topicController.getAllTopics)
 
 router.get('/:id', topicController.getTopicById)
