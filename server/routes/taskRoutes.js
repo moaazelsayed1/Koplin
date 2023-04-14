@@ -2,6 +2,8 @@ const express = require('express')
 const taskController = require('../controllers/taskController')
 const router = express.Router()
 
+router.get('/board/:boardId', taskController.getTasksByBoard)
+
 router.get('/:userId', taskController.getTasksByUser)
 
 router.get('/', taskController.getAllTasks)

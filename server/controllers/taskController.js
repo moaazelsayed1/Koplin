@@ -19,6 +19,22 @@ exports.getTasksByUser = catchAsync(async (req, res, next) => {
   })
 })
 
+exports.getTasksByBoard = catchAsync(async (req, res, next) => {
+  const boardId = req.params.boardId
+  const tasks = await Task.findAll({
+    where: {
+      board_id: boardId,
+    },
+  })
+  res.status(200).json({
+    status: 'success',
+    results: tasks.length,
+    data: {
+      tasks,
+    },
+  })
+})
+
 exports.getAllTasks = Factory.getAll(Task)
 
 exports.createTask = Factory.createOne(Task)
