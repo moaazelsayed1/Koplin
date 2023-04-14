@@ -9,6 +9,8 @@ const taskCommentController = require(path.join(
 
 const router = express.Router()
 
+router.get('/task/:taskId', taskCommentController.getAllCommentsByTask)
+
 router.get('/', taskCommentController.getAllTaskComments)
 
 router.get('/:id', taskCommentController.getTaskCommentById)
