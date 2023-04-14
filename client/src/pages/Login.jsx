@@ -20,8 +20,6 @@ const Login = () => {
 
     const usernameHandler = (e) => {
         setUsername(e.target.value)
-
-        console.log('username', username)
     }
 
     const [value, setValue] = useState('')
@@ -37,10 +35,6 @@ const Login = () => {
     }
 
     useEffect(() => {
-        console.log(
-            usernameError ? usernameError : 'false',
-            passwordError ? 'true' : 'false'
-        )
         if (usernameError || passwordError || !username || !password) {
             setValidForm(true)
         } else {
@@ -50,24 +44,21 @@ const Login = () => {
 
     const SubmitHandler = async (e) => {
         e.preventDefault()
-        console.log('submit')
         const data = new FormData(e.target)
-        const email = data.get('email').trim()
-        const password = data.get('password').trim()
-        console.log(email, password)
+        const email = data.get('email')?.trim()
+        const password = data.get('password')?.trim()
         setLoading(true)
 
         try {
             const res = await authAPI.login({ email, password })
             setLoading(false)
-            console.log(res)
             localStorage.setItem('token', res.token)
             navigate('/')
         } catch (err) {
-            console.log(err)
             setLoading(false)
-            seterr(err.response.data.message)
+            seterr(err.data.error) // change this line
         }
+        console.log(error)
     }
 
     return (
