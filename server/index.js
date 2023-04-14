@@ -13,7 +13,13 @@ app.use(
 )
 app.use(cookieParser())
 app.use(bodyParser.json())
-// middleware
+
+const AppError = require(path.join(__dirname, 'utils', 'appError'))
+const globalErrorHandler = require(path.join(
+  __dirname,
+  'controllers',
+  'errorController'
+))
 const userRouter = require(path.join(__dirname, 'routes', 'userRoutes'))
 const taskRouter = require(path.join(__dirname, 'routes', 'taskRoutes'))
 const topicRouter = require(path.join(__dirname, 'routes', 'topicRoutes'))
@@ -34,8 +40,10 @@ app.use('/api/v1/boards', boardRouter)
 app.use('/api/v1/task-comments', taskCommentRouter)
 
 // routes
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can not find ${req.originalUrl} on this server`, 404))
 })
+
+app.use(globalErrorHandler)
 
 module.exports = app
