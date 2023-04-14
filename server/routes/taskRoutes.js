@@ -1,13 +1,8 @@
-const path = require('path')
 const express = require('express')
-const taskController = require(path.join(
-  __dirname,
-  '..',
-  'controllers',
-  'taskController'
-))
-
+const taskController = require('../controllers/taskController')
 const router = express.Router()
+
+router.get('/:userId', taskController.getTasksByUser)
 
 router.get('/', taskController.getAllTasks)
 
