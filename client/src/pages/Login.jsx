@@ -26,14 +26,6 @@ const Login = () => {
     const [error, seterr] = useState('')
     const [loading, setLoading] = useState(false)
 
-    const load = () => {
-        setLoading(true)
-
-        setTimeout(() => {
-            setLoading(false)
-        }, 2000)
-    }
-
     useEffect(() => {
         if (usernameError || passwordError || !username || !password) {
             setValidForm(true)
