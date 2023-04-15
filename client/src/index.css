@@ -34,3 +34,12 @@ button,
         @apply text-2xl font-bold text-gray-800;
     }
 }
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content {
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    padding-left: 1rem;
+}
+
+.p-treenode-content button {
+    display: none;
+}

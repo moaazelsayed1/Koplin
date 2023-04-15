@@ -7,9 +7,9 @@ const authUtils = {
         // const token = cookies.get('jwt')
         if (!token) return false
         try {
-            // const res = await authAPI.verifyToken()
-            // return res.user
-            return true
+            console.log('ds')
+            const res = await authAPI.verifyUser()
+            return res.data.data
         } catch (err) {
             return false
         }

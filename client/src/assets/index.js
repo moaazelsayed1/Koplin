@@ -10,7 +10,7 @@
 
 import logo from './images/logo.svg'
 import loader from './images/loader.svg'
-
-export { logo, loader }
+import fullLogo from './images/fullLogo.svg'
+export { logo, loader, fullLogo }
 
 // export default assets
