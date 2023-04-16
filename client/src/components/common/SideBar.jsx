@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
-import authAPI from '../../api/AuthAPI'
-
-import { Sidebar } from 'primereact/sidebar'
-
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
 import AddNewTopic from './modals/AddNewTopic'
@@ -13,12 +8,12 @@ import BoardApi from '../../api/BoardApi'
 import { setTopics } from '../../redux/features/topicSlice'
 import { Link, useNavigate } from 'react-router-dom'
 import { Tree } from 'primereact/tree'
-// import { NodeService } from '../../service/NodeService'
 import { setBoards } from '../../redux/features/boardSlice'
+
 const SideBar = () => {
     const navigate = useNavigate()
     const [nodes, setNodes] = useState([])
-    const [selectedNodeKey, setSelectedNodeKey] = useState('')
+    const [selectedKey, setSelectedKey] = useState('')
 
     const onExpand = (event) => {
         console.log('onExpand')
@@ -43,12 +38,7 @@ const SideBar = () => {
     const user = useSelector((state) => state.user.value)
     const topics = useSelector((state) => state.topic.value)
     const boards = useSelector((state) => state.board.value)
-
     let result = []
-
-    useEffect(() => {
-        NodeService.getTreeNodes().then((data) => setNodes(data))
-    }, [boards])
 
     const transformData = (data) => {
         // iterate through the array of objects
@@ -68,42 +58,69 @@ const SideBar = () => {
         return result
     }
 
-    transformData(boards)
+    // transformData(boards)
     console.log(result)
 
     const [activeIndex, setActiveIndex] = useState(0)
+    let mappedNodes = []
 
     useEffect(() => {
-        // const getBoards = async () => {
-        //     try {
-        //         const res = await TopicApi.getAll()
-        //         dispatch(setTopics(res))
-        //     } catch (error) {
-        //         alert(error)
-        //     }
-        // }
-        // getBoards()
+        const getTopics = async () => {
+            try {
+                const res = await TopicApi.getAll()
+                dispatch(setTopics(res.data.data))
+                console.log(res.data.data)
+            } catch (error) {
+                alert(error)
+            }
+        }
 
         const getBoards = async () => {
             try {
                 const res = await BoardApi.getAll()
                 dispatch(setBoards(res.data.data))
+                console.log(res.data.data)
             } catch (error) {
                 alert(error)
             }
         }
+
+        getTopics()
         getBoards()
     }, [])
 
-    // useEffect(() => {
-    //     updateActiveBoard(topics.data.data)
-    // }, [topics])
+    useEffect(() => {
+        const fillData = async () => {
+            try {
+                mappedNodes = await topics.map((topic) => {
+                    const relatedBoards = boards.filter(
+                        (board) => board.topic_id === topic.topic_id
+                    )
 
-    // const updateActiveBoard = (listBoard) => {
-    //     const activeItem = listBoard.findIndex((e) => e.id === topic_id)
-    //     setActiveIndex(activeItem)
-    //     console.log(activeItem)
-    // }
+                    return {
+                        key: topic.topic_id.toString(),
+                        label: topic.topic_title,
+                        children: relatedBoards.map((board) => {
+                            return {
+                                key:
+                                    board.board_id.toString() +
+                                    `-${topic.topic_id}`,
+                                label: board.board_title,
+                                url: `/boards/${board.board_id}`,
+                            }
+                        }),
+                    }
+                })
+            } finally {
+                console.log(mappedNodes)
+                setNodes(mappedNodes)
+            }
+        }
+
+        if (topics.length && boards.length) {
+            fillData()
+        }
+    }, [topics, boards])
 
     const modalVisible = () => {
         setNewBoardModal(false)
@@ -117,21 +134,23 @@ const SideBar = () => {
         console.log('logout')
     }
 
-    const NodeService = {
-        async getTreeNodesData() {
-            return result
-        },
+    const nodeTemplate = (node, options) => {
+        let label = <b>{node.label}</b>
 
-        getTreeTableNodes() {
-            return Promise.resolve(this.getTreeTableNodesData())
-        },
+        if (node.url) {
+            label = (
+                <a
+                    href={node.url}
+                    className="text-primary hover:underline font-semibold"
+                >
+                    {node.label}
+                </a>
+            )
+        }
 
-        getTreeNodes() {
-            return Promise.resolve(this.getTreeNodesData())
-        },
+        return <span className={options.className}>{label} </span>
     }
 
-    console.log(NodeService)
     return (
         <>
             {' '}
@@ -162,17 +181,14 @@ const SideBar = () => {
 
                         <div className=" flex justify-content-center">
                             <Tree
-                                value={nodes}
                                 selectionMode="single"
-                                selectionKeys={selectedNodeKey}
+                                selectionKeys={selectedKey}
                                 onSelectionChange={(e) =>
-                                    setSelectedNodeKey(e.value)
+                                    setSelectedKey(e.value)
                                 }
-                                onExpand={onExpand}
-                                onCollapse={onCollapse}
-                                onSelect={onSelect}
-                                onUnselect={onUnselect}
-                                className="w-full p-0 m-0 border-0"
+                                value={nodes ? nodes : []}
+                                nodeTemplate={nodeTemplate}
+                                className="w-full md:w-30rem"
                             />
                         </div>
                     </div>
