@@ -23,7 +23,7 @@ const KanBan = (props) => {
         sourceTasks.forEach((s) => (s.label = newLabel))
 
         // Concatenate the two arrays
-        data = data.push(sourceTasks)
+        data = data.concat(sourceTasks)
 
         return data
     }
