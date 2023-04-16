@@ -1,5 +1,7 @@
 // REACT
 import React, { useEffect, useState } from 'react'
+import { Button } from 'primereact/button'
+
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 //APIS
@@ -103,7 +105,7 @@ const KanBan = (props) => {
         console.log('newTask', newTask)
     }
     return (
-        <div>
+        <div className=" flex flex-col h-screen">
             <AddNewTask
                 visible={NewBoardModal}
                 onVisble={modalVisible}
@@ -112,20 +114,34 @@ const KanBan = (props) => {
                 onFinis={AddTheNewTask}
                 key={newTaskLabel + boardId}
             />
-
+            <div className="py-5 pl-6 flex flex-row items-center bg-slate-50 border-b">
+                <p className="text-2xl font-semibold text-stone-900 mr-3">
+                    Board 1
+                </p>
+                <Button
+                    className=" h-9 shadow-btn"
+                    label="New Task"
+                    icon="pi pi-plus"
+                    size="small"
+                    onClick={() => createTaskHandler('1')}
+                />
+            </div>
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="flex justify-items-start w-[calc(100vw-16rem)] overflow-x-auto bg-slate-300">
-                    <div className="w-[300px]">
+                <div className="flex justify-items-start w-[calc(100vw-16rem)] overflow-x-auto overflow-y-hidden pl-6 pt-6 bg-[#F6F6F8] h-full">
+                    <div className=" max-w-lg grow">
                         <Droppable id="1" key="1" droppableId="1">
                             {(provided) => (
                                 <div
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
-                                    className=" w-[300px] p-3 mr-3"
+                                    className="  p-3 mr-3   h-full "
                                 >
-                                    <div className=" flex items-center justify-between mb-3">
-                                        <h3 className="grow h3">To Do</h3>
+                                    <div className=" flex items-center justify-between mb-6">
+                                        <h3 className="grow sectionTitle">
+                                            TO DO
+                                        </h3>
                                         <button
+                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                                             onClick={() =>
                                                 createTaskHandler('1')
                                             }
@@ -133,42 +149,52 @@ const KanBan = (props) => {
                                             <i className="pi pi-plus"></i>
                                         </button>
                                     </div>
-                                    {data &&
-                                        data
-                                            .filter(
-                                                (task) => task.label === '1'
-                                            )
-                                            .map((task, index) => (
-                                                <Draggable
-                                                    key={task.task_id}
-                                                    draggableId={task.task_id.toString()}
-                                                    index={index}
-                                                >
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            className={`p-8 mb-3${
-                                                                snapshot.isDragging
-                                                                    ? 'cursor-grab'
-                                                                    : 'cursor-default	'
-                                                            }`}
-                                                            ref={
-                                                                provided.innerRef
-                                                            }
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                        >
-                                                            <h2>
-                                                                {
-                                                                    task.task_title
+                                    <div className=" overflow-y-auto  h-screen pb-60 ">
+                                        {data &&
+                                            data
+                                                .filter(
+                                                    (task) => task.label === '1'
+                                                )
+                                                .map((task, index) => (
+                                                    <Draggable
+                                                        key={task.task_id}
+                                                        draggableId={task.task_id.toString()}
+                                                        index={index}
+                                                    >
+                                                        {(
+                                                            provided,
+                                                            snapshot
+                                                        ) => (
+                                                            <div
+                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
+                                                                    snapshot.isDragging
+                                                                        ? 'cursor-grab'
+                                                                        : 'cursor-default	'
+                                                                }`}
+                                                                ref={
+                                                                    provided.innerRef
                                                                 }
-                                                            </h2>
-                                                            <h4>
-                                                                {task.label}
-                                                            </h4>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                            >
+                                                                <h2 className=" text-base font-medium text-neutral-900">
+                                                                    {
+                                                                        task.task_title
+                                                                    }
+                                                                </h2>
+                                                                <p className="carddescription text-base font-medium text-[#7A7493]">
+                                                                    {
+                                                                        task.task_description
+                                                                    }
+                                                                </p>
+                                                                <h4>
+                                                                    {task.label}
+                                                                </h4>
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                    </div>
                                     {provided.placeholder}
                                 </div>
                             )}
@@ -185,7 +211,7 @@ const KanBan = (props) => {
                                     {...provided.droppableProps}
                                     className=" w-[300px] p-3 mr-3"
                                 >
-                                    <div className=" flex items-center justify-between mb-3">
+                                    <div className=" flex items-center justify-between mb-6">
                                         <h3 className="grow h3">Completed</h3>
                                         <i className="pi pi-plus"></i>
                                     </div>

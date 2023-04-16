@@ -33,6 +33,9 @@ button,
     .h3 {
         @apply text-2xl font-bold text-gray-800;
     }
+    .sectionTitle {
+        @apply text-lg font-medium text-[#3F395A];
+    }
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content {
@@ -43,3 +46,13 @@ button,
 /* .p-treenode-content button {
     display: none;
 } */
+
+.carddescription {
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2; /* number of lines to display */
+    line-height: 1.5; /* line height for each line */
+}
