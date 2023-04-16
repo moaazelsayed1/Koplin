@@ -77,14 +77,17 @@ exports.getAll = (Model) =>
     const offset = (page - 1) * limit
 
     const sortOrder = req.query.sort || ''
-    const sortFields = sortOrder.split(',').map((field) => field.trim())
-    const order = sortFields.map((field) => {
-      if (field.startsWith('-')) {
-        return [field.slice(1), 'DESC']
-      } else {
-        return [field, 'ASC']
-      }
-    })
+    let order = []
+    if (sortOrder) {
+      const sortFields = sortOrder.split(',').map((field) => field.trim())
+      order = sortFields.map((field) => {
+        if (field.startsWith('-')) {
+          return [field.slice(1), 'DESC']
+        } else {
+          return [field, 'ASC']
+        }
+      })
+    }
 
     const results = await Model.findAll({
       where: where,
