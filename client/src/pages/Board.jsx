@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
 import BoardApi from '../api/BoardApi'
+import KanBan from '../components/common/ KanBan'
 const Board = () => {
     const { boardId } = useParams()
     console.log('boardId', boardId)
@@ -14,7 +15,6 @@ const Board = () => {
         const getBoard = async () => {
             try {
                 const res = await BoardApi.getOne(boardId)
-                console.log('Boar')
                 setTitle(res.data.data.board_title)
                 setDescription(res.data.data.board_description)
             } catch (error) {
@@ -25,17 +25,20 @@ const Board = () => {
         const getTasks = async () => {
             try {
                 const res2 = await BoardApi.getTasks(boardId)
-                console.log('Tasks')
-                console.log('Boar', res2)
+                setLists(res2.data.tasks)
             } catch (error) {
                 alert(error)
             }
         }
-        getTasks()
         getBoard()
+        getTasks()
     }, [])
 
-    return <div>Board</div>
+    return (
+        <div>
+            <KanBan data={lists} boardId={boardId} />
+        </div>
+    )
 }
 
 export default Board
