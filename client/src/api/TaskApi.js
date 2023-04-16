@@ -1,7 +1,7 @@
 import axiosClient from './axiosClient'
 
 const TaskApi = {
-    // create: (params) => axiosClient.post('topics', params),
+    create: (params) => axiosClient.post('tasks', params),
     updateTask: (id, params) => axiosClient.put(`tasks/${id}`, params),
     // login: (params) => axiosClient.post('users/login', params),
     // verifyUser: () => axiosClient.get('users/me'),

@@ -1,11 +1,14 @@
+// REACT
 import React, { useEffect, useState } from 'react'
+//DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-
+//APIS
 import TaskApi from '../../api/TaskApi'
+//MODALS
+import AddNewTask from './modals/AddNewTask'
+
 const KanBan = (props) => {
     const boardId = props.boardId
-    // const data = props.data
-    // console.log('data', data)
     const [data, setData] = useState('')
     console.log(data)
 
@@ -13,6 +16,7 @@ const KanBan = (props) => {
         setData(props.data)
     }, [props.data])
 
+    // Drag and drop position changer functions
     function updateData(data, sourceTasks, newLabel) {
         // Remove objects in data that have the same task_id as objects in sourceTasks
         data = data.filter(
@@ -44,9 +48,6 @@ const KanBan = (props) => {
             (task) => task.label === `${destinationColIndex}`
         )
 
-        // const sourceSectionId = sourceCol.id
-        // const destinationSectionId = destinationCol.id
-
         const sourceTasks = [...sourceCol]
         const destinationTasks = [...destinationCol]
 
@@ -54,36 +55,68 @@ const KanBan = (props) => {
         if (source.droppableId !== destination.droppableId) {
             ;[removed] = sourceTasks.splice(source.index, 1)
             destinationTasks.splice(destination.index, 0, removed)
+            console.log('destination.index', destinationTasks)
+
+            // updates(removed.task_id, destinationColIndex, destination.index)
+
             updateData(data, sourceTasks, sourceColIndex)
             updateData(data, destinationTasks, destinationColIndex)
         } else {
             ;[removed] = destinationTasks.splice(source.index, 1)
-            console.log('destinationTasks 1', destinationTasks)
             destinationTasks.splice(destination.index, 0, removed)
+            console.log('destination.index', destinationTasks)
 
-            console.log('removed', removed)
-            console.log('destination.index', destination.index)
+            // updates(removed.task_id, destinationColIndex, destination.index)
+
             updateData(data, destinationTasks, destinationColIndex)
         }
-        console.log('data', removed)
         try {
             await TaskApi.updateTask(removed.task_id, {
                 ...removed,
                 label: destinationColIndex,
             })
-            setData(data)
             console.log('data', data)
         } catch (error) {
             alert(error)
         }
     }
 
+    // MODAL UTILS
+    const [NewBoardModal, setNewBoardModal] = useState(false)
+    const [newTaskLabel, setnewTaskLabel] = useState('')
+
+    const modalVisible = () => {
+        setNewBoardModal(false)
+    }
+
+    const createTaskHandler = (label) => {
+        setnewTaskLabel(label)
+        console.log('label', label)
+        setNewBoardModal(true)
+    }
+
+    const AddTheNewTask = (newTask) => {
+        setData((prevData) => {
+            const newData = [...prevData, newTask]
+            return newData
+        })
+        console.log('newTask', newTask)
+    }
     return (
         <div>
+            <AddNewTask
+                visible={NewBoardModal}
+                onVisble={modalVisible}
+                boardId={boardId}
+                labelId={newTaskLabel}
+                onFinis={AddTheNewTask}
+                key={newTaskLabel + boardId}
+            />
+
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className="flex justify-items-start w-[calc(100vw-16rem)] overflow-x-auto bg-slate-300">
                     <div className="w-[300px]">
-                        <Droppable key="1" droppableId="1">
+                        <Droppable id="1" key="1" droppableId="1">
                             {(provided) => (
                                 <div
                                     ref={provided.innerRef}
@@ -92,7 +125,13 @@ const KanBan = (props) => {
                                 >
                                     <div className=" flex items-center justify-between mb-3">
                                         <h3 className="grow h3">To Do</h3>
-                                        <i className="pi pi-plus"></i>
+                                        <button
+                                            onClick={() =>
+                                                createTaskHandler('1')
+                                            }
+                                        >
+                                            <i className="pi pi-plus"></i>
+                                        </button>
                                     </div>
                                     {data &&
                                         data
