@@ -13,6 +13,7 @@ const Task = sequelize.define('Task', {
   position: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    default: 0,
   },
   task_title: {
     type: DataTypes.STRING,
