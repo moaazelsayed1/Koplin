@@ -155,7 +155,7 @@ const KanBan = (props) => {
                                                 .filter(
                                                     (task) => task.label === '1'
                                                 )
-                                                .reverse()
+
                                                 .map((task, index) => (
                                                     <Draggable
                                                         key={task.task_id}
@@ -231,7 +231,6 @@ const KanBan = (props) => {
                                                 .filter(
                                                     (task) => task.label === '2'
                                                 )
-                                                .reverse()
                                                 .map((task, index) => (
                                                     <Draggable
                                                         key={task.task_id}
@@ -309,7 +308,6 @@ const KanBan = (props) => {
                                                 .filter(
                                                     (task) => task.label === '3'
                                                 )
-                                                .reverse()
                                                 .map((task, index) => (
                                                     <Draggable
                                                         key={task.task_id}
@@ -387,7 +385,6 @@ const KanBan = (props) => {
                                                 .filter(
                                                     (task) => task.label === '4'
                                                 )
-                                                .reverse()
                                                 .map((task, index) => (
                                                     <Draggable
                                                         key={task.task_id}
@@ -442,166 +439,3 @@ const KanBan = (props) => {
 }
 
 export default KanBan
-
-{
-    /* {data.map((task) => (
-                        <div key={task.task_id}>
-                            <h2>{task.task_title}</h2>
-                            <h4>{task.label}</h4>
-                        </div>
-                    ))} */
-}
-
-// {data
-//     .filter((task) => task.label === 'todo')
-//     .map((task, index) => (
-//         <Draggable
-//             key={task.task_id}
-//             draggableId={task.task_id}
-//             index={index}
-//         >
-//             {(provided, snapshot) => (
-//                 <div>
-//                     <h2>
-//                         {task.task_title}
-//                     </h2>
-//                     <h4>{task.label}</h4>
-//                 </div>
-//             )}
-//         </Draggable>
-//     ))}
-
-{
-    /* {
-                        section.tasks.map((task, index) => (
-                          <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(provided, snapshot) => (
-                              <Card
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                sx={{
-                                  padding: '10px',
-                                  marginBottom: '10px',
-                                  cursor: snapshot.isDragging ? 'grab' : 'pointer!important'
-                                }}
-                                onClick={() => setSelectedTask(task)}
-                              >
-                                <Typography>
-                                  {task.title === '' ? 'Untitled' : task.title}
-                                </Typography>
-                              </Card>
-                            )}
-                          </Draggable>
-                        ))
-                      } */
-}
-
-{
-    /* <div className="w-[300px]">
-<Droppable key="2" droppableId="Two">
-    {(provided) => (
-        <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className=" w-[300px] p-3 mr-3"
-        >
-            <div className=" flex items-center justify-between mb-3">
-                <h3 className="grow h3">To Do</h3>
-                <i className="pi pi-plus"></i>
-            </div>
-            {data &&
-                data
-                    .filter(
-                        (task) => task.label === 'todo'
-                    )
-                    .map((task, index) => (
-                        <Draggable
-                            key={task.task_id}
-                            draggableId={task.task_id}
-                            index={index}
-                        >
-                            {(provided, snapshot) => (
-                                <div
-                                    className={`p-8 mb-3${
-                                        snapshot.isDragging
-                                            ? 'cursor-grab'
-                                            : 'cursor-default	'
-                                    }`}
-                                    ref={
-                                        provided.innerRef
-                                    }
-                                    {...provided.dragHandleProps}
-                                    {...provided.dragHandleProps}
-                                >
-                                    <h2>
-                                        {
-                                            task.task_title
-                                        }
-                                    </h2>
-                                    <h4>
-                                        {task.label}
-                                    </h4>
-                                </div>
-                            )}
-                        </Draggable>
-                    ))}
-            {provided.placeholder}
-        </div>
-    )}
-</Droppable>
-</div> */
-}
-
-// {data &&
-//     data
-//         .filter(
-//             (task) => task.label === 'todo'
-//         )
-//         .map((task, index) => (
-//             <Draggable
-//                 key={task.task_id}
-//                 draggableId={task.task_id}
-//                 index={index}
-//             >
-//                 {(provided, snapshot) => (
-//                     <div
-//                         className={`p-8 mb-3${
-//                             snapshot.isDragging
-//                                 ? 'cursor-grab'
-//                                 : 'cursor-default	'
-//                         }`}
-//                         ref={
-//                             provided.innerRef
-//                         }
-//                         {...provided.draggableProps}
-//                         {...provided.dragHandleProps}
-//                     >
-//                         <h2>
-//                             {
-//                                 task.task_title
-//                             }
-//                         </h2>
-//                         <h4>
-//                             {task.label}
-//                         </h4>
-//                     </div>
-//                 )}
-//             </Draggable>
-//         ))}
-
-;<Draggable key="skdksc" draggableId="skdksc" index="1">
-    {(provided, snapshot) => (
-        <div
-            className={`p-8 mb-3${
-                snapshot.isDragging ? 'cursor-grab' : 'cursor-default	'
-            }`}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-        >
-            <h2>tt1</h2>
-            <h4>label1</h4>
-        </div>
-    )}
-</Draggable>
