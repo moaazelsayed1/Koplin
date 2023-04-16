@@ -10,6 +10,10 @@ const Task = sequelize.define('Task', {
     primaryKey: true,
     autoIncrement: true,
   },
+  position: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   task_title: {
     type: DataTypes.STRING,
     allowNull: false,

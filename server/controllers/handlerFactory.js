@@ -1,6 +1,7 @@
 const { query } = require('express')
 const AppError = require('../utils/appError')
 const catchAsync = require('../utils/catchAsync')
+const { Op } = require('sequelize')
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -59,14 +60,44 @@ exports.getOne = (Model) =>
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findAll()
+    const queryObj = { ...req.query }
+
+    const excludedFields = ['page', 'sort', 'limit', 'fields']
+    excludedFields.forEach((el) => delete queryObj[el])
+
+    let where = {}
+    for (const key in queryObj) {
+      where[key] = {
+        [Op.eq]: queryObj[key],
+      }
+    }
+
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 50
+    const offset = (page - 1) * limit
+
+    const sortOrder = req.query.sort || ''
+    const sortFields = sortOrder.split(',').map((field) => field.trim())
+    const order = sortFields.map((field) => {
+      if (field.startsWith('-')) {
+        return [field.slice(1), 'DESC']
+      } else {
+        return [field, 'ASC']
+      }
+    })
+
+    const results = await Model.findAll({
+      where: where,
+      order: order,
+      offset: offset,
+      limit: limit,
+    })
 
     res.status(200).json({
       status: 'success',
-      results: doc.length,
-      requestedAt: req.requestedAt,
+      results: results.length,
       data: {
-        data: doc,
+        data: results,
       },
     })
   })
