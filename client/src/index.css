@@ -11,6 +11,7 @@
 
 body {
     font-family: (--font-family);
+    overflow-y: hidden;
 }
 
 .p-float-label input {
@@ -35,6 +36,12 @@ button,
     }
     .sectionTitle {
         @apply text-lg font-medium text-[#3F395A];
+    }
+    .sectionspace {
+        @apply p-3 pb-0 mr-3 h-full;
+    }
+    .secparent {
+        @apply max-w-lg min-w-min w-1/4 grow;
     }
 }
 
