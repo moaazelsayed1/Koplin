@@ -21,6 +21,12 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: 'Please provide a valid email address',
+        },
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -34,7 +40,6 @@ const User = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
-    //  migration
     passwordResetToken: {
       type: DataTypes.STRING,
     },
