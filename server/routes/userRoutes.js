@@ -39,6 +39,7 @@ router.patch(
   userController.uploadUserPhotoToCloudinary,
   userController.updateMe
 )
+router.get('/topics/:id/users', userController.getUsersByTopic)
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)
 

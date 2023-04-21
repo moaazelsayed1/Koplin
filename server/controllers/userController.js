@@ -1,5 +1,6 @@
 const path = require('path')
 const User = require(path.join(__dirname, '..', 'models', 'user'))
+const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
 const Factory = require(path.join(__dirname, 'handlerFactory'))
 const cloudinary = require(path.join(__dirname, '..', 'utils', 'cloudinary'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
@@ -9,6 +10,7 @@ const { upload, dataUri } = require(path.join(
   'utils',
   'multer'
 ))
+
 const sharp = require('sharp')
 
 /* 
@@ -78,6 +80,19 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       user: updatedUser,
     },
   })
+})
+
+exports.getUsersByTopic = catchAsync(async (req, res, next) => {
+  const topicId = req.params.id
+
+  const topicUsers = await TopicUser.findAll({
+    where: { topic_id: topicId },
+    include: [{ model: User }],
+  })
+
+  const users = topicUsers.map((topicUser) => topicUser.User)
+
+  res.status(200).json({ status: 'success', data: { users } })
 })
 
 exports.getAllUsers = Factory.getAll(User)
