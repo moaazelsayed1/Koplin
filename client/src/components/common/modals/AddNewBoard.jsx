@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import Input from '../Input'
@@ -6,9 +6,9 @@ import { Toast } from 'primereact/toast'
 
 import { useNavigate } from 'react-router-dom'
 
-import TopicApi from '../../../api/TopicApi'
+import BoardApi from '../../../api/BoardApi'
 
-const AddNewTopic = (props) => {
+const AddNewBoard = (props) => {
     const toast = useRef(null)
 
     const navigate = useNavigate()
@@ -17,11 +17,16 @@ const AddNewTopic = (props) => {
     const [newBoardNameError, setNewBoardNameError] = useState('')
 
     const [newBoardDesciption, setNewBoardDesciption] = useState('')
+    const [TopicId, setTopicId] = useState('')
+    useEffect(() => {
+        setTopicId(props.topicId)
+    }, [props.topicId])
 
     const [loading, setLoading] = useState(false)
 
     const topicNameHandler = (e) => {
         setNewBoardName(e.target.value)
+        console.log(TopicId)
     }
     const topicdescriptionHandler = (e) => {
         setNewBoardDesciption(e.target.value)
@@ -29,22 +34,24 @@ const AddNewTopic = (props) => {
 
     const SubmitHandler = async (e) => {
         e.preventDefault()
-        const topic_title = newBoardName
-        const topic_description = newBoardDesciption
+        const board_title = newBoardName
+        const board_description = newBoardDesciption
 
         setLoading(true)
 
-        if (!topic_title) {
+        if (!board_title) {
             setNewBoardNameError('Topic name is required')
             setLoading(false)
             return
         }
-
+        const topic_id = TopicId
         try {
-            const res = await TopicApi.create({
-                topic_title,
-                topic_description,
+            const res = await BoardApi.create({
+                board_title,
+                board_description,
+                topic_id,
             })
+            console.log(res)
             setLoading(false)
             setNewBoardName('')
             setNewBoardDesciption('')
@@ -128,4 +135,4 @@ const AddNewTopic = (props) => {
     )
 }
 
-export default AddNewTopic
+export default AddNewBoard

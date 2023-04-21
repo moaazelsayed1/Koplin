@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { InputText } from 'primereact/inputtext'
 import Input from '../components/common/Input'
 import { Password } from 'primereact/password'
 import { Button } from 'primereact/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { Divider } from 'primereact/divider'
+import { Messages } from 'primereact/messages'
+
 import authAPI from '../api/AuthAPI'
 
 const Signup = () => {
     const navigate = useNavigate()
+    const msgs = useRef(null)
 
     const [value, setValue] = useState('')
     const [error, seterr] = useState('')
@@ -29,13 +32,10 @@ const Signup = () => {
 
     const usernameHandler = (e) => {
         setUsername(e.target.value)
-
-        console.log('username', username)
     }
 
     const emailHandler = (e) => {
         setEmail(e.target.value)
-        console.log('email', email)
     }
 
     const userCheckHandler = () => {
@@ -87,11 +87,6 @@ const Signup = () => {
     }
 
     useEffect(() => {
-        console.log(
-            usernameError ? usernameError : 'false',
-            emailError ? 'true' : 'false',
-            passwordError ? 'true' : 'false'
-        )
         if (
             usernameError ||
             emailError ||
@@ -113,14 +108,6 @@ const Signup = () => {
         emailError,
         passwordError,
     ])
-
-    const load = () => {
-        setLoading(true)
-
-        setTimeout(() => {
-            setLoading(false)
-        }, 2000)
-    }
 
     const header = <div className="font-bold mb-3">Pick a password</div>
     const footer = (
@@ -154,20 +141,38 @@ const Signup = () => {
             setLoading(false)
             localStorage.setItem('token', res.token)
             navigate('/')
-            console.log(res)
         } catch (err) {
-            console.log(err)
-        }
+            setLoading(false)
+            seterr(err.response.data.error)
+            const addMessages = () => {
+                msgs.current.show([
+                    {
+                        severity: 'error',
+                        summary: '',
+                        detail: `${err.data.message}`,
+                        sticky: true,
+                        life: 3000,
+                    },
+                ])
+            }
+            const clearMessages = () => {
+                msgs.current.clear()
+            }
+            setTimeout(() => {
+                clearMessages()
+            }, 4000) // 4 seconds delay before calling xyz function
 
-        console.log('dsa', username, email, password)
+            addMessages()
+        }
     }
     return (
         <>
             <div className="h3 mt-8">Signup</div>
             <form
-                className="mt-12 w-60 grid grid-col justify-stretch gap-8"
+                className="mt-12 w-80 grid grid-col justify-stretch gap-8"
                 onSubmit={SubmitHandler}
             >
+                <Messages ref={msgs} />
                 <Input
                     type="text"
                     label="Username"
@@ -197,7 +202,9 @@ const Signup = () => {
                     <span className="p-float-label">
                         <Password
                             name="password"
-                            className={`inputpw ${error ? 'p-invalid' : ''}`}
+                            className={`inputpw ${
+                                error || passwordError ? 'p-invalid' : ''
+                            }`}
                             inputId="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -208,7 +215,9 @@ const Signup = () => {
                         <label htmlFor="password">Password</label>
                     </span>
                     {passwordError && (
-                        <small id="Password-help">{passwordError}</small>
+                        <small id="Password-help " className="text-neutral-500">
+                            {passwordError}
+                        </small>
                     )}
                 </div>
 

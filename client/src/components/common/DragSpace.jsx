@@ -8,7 +8,6 @@ const DragSpace = (props) => {
 
     useEffect(() => {
         setdata(props.data)
-        console.log('data', data)
     }, [])
 
     return (

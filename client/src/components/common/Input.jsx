@@ -3,7 +3,7 @@ import { InputText } from 'primereact/inputtext'
 
 const Input = (props) => {
     return (
-        <div className="flex flex-col gap-1 w-full">
+        <div className="grow flex flex-col gap-1 w-full">
             <span className="p-float-label">
                 <InputText
                     name={props.id}
@@ -26,7 +26,11 @@ const Input = (props) => {
                 <label htmlFor="username">{props.label}</label>
             </span>
 
-            {props.help && <small id={props.aria}>{props.help}</small>}
+            {props.help && (
+                <small className="text-neutral-500" id={props.aria}>
+                    {props.help}
+                </small>
+            )}
         </div>
     )
 }

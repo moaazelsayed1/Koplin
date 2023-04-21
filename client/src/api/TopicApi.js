@@ -3,8 +3,8 @@ import axiosClient from './axiosClient'
 const TopicApi = {
     create: (params) => axiosClient.post('topics', params),
     getAll: () => axiosClient.get('topics'),
-    // login: (params) => axiosClient.post('users/login', params),
-    // verifyUser: () => axiosClient.get('users/me'),
+    editTopic: (id, params) => axiosClient.put(`topics/${id}`, params),
+    deleteTopic: (id) => axiosClient.delete(`topics/${id}`),
 }
 
 export default TopicApi
