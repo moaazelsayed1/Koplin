@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import authUtils from '../../utils/authUtils'
 import Loading from '../common/Loading'
 import Container from '../common/Container'
 import LogoK from '../common/LogoK'
+import { Toast } from 'primereact/toast'
 
 const AuthLayout = () => {
     const navigate = useNavigate()
     const [IsLoading, setIsLoading] = useState(true)
+    const toast = useRef(null)
 
     useEffect(() => {
         const checkAuth = async () => {

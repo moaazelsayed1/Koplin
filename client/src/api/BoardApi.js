@@ -7,6 +7,7 @@ const BoardApi = {
     // verifyUser: () => axiosClient.get('users/me'),
     getOne: (id) => axiosClient.get(`boards/${id}`),
     getTasks: (id) => axiosClient.get(`tasks/board/${id}`),
+    create: (params) => axiosClient.post('boards', params),
 }
 
 export default BoardApi

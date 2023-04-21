@@ -7,11 +7,10 @@ const authUtils = {
         // const token = cookies.get('jwt')
         if (!token) return false
         try {
-            console.log('ds')
             const res = await authAPI.verifyUser()
             return res.data.data
         } catch (err) {
-            return false
+            return 'You are not authenticated. Please login again'
         }
     },
 }

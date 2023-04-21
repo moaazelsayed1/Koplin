@@ -8,15 +8,16 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import TaskApi from '../../api/TaskApi'
 //MODALS
 import AddNewTask from './modals/AddNewTask'
+import { useNavigate } from 'react-router-dom'
 
 const KanBan = (props) => {
+    const navigate = useNavigate()
     const boardId = props.boardId
     const [data, setData] = useState('')
-    console.log(data)
 
     useEffect(() => {
         setData(props.data)
-    }, [props.data])
+    }, [props.data, navigate])
 
     // Drag and drop position changer functions
     function updateData(data, sourceTasks, newLabel) {
@@ -29,7 +30,9 @@ const KanBan = (props) => {
         sourceTasks.forEach((s) => (s.label = newLabel))
 
         // Concatenate the two arrays
-        data = data.concat(sourceTasks)
+        data = data
+            .concat(sourceTasks)
+            .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
 
         return data
     }
@@ -39,9 +42,6 @@ const KanBan = (props) => {
         const sourceColIndex = source.droppableId
 
         const destinationColIndex = destination.droppableId
-
-        console.log('sourceColIndex', sourceColIndex)
-        console.log('destinationColIndex', destinationColIndex)
 
         const sourceCol = data.filter(
             (task) => task.label === `${sourceColIndex}`
@@ -57,7 +57,6 @@ const KanBan = (props) => {
         if (source.droppableId !== destination.droppableId) {
             ;[removed] = sourceTasks.splice(source.index, 1)
             destinationTasks.splice(destination.index, 0, removed)
-            console.log('destination.index', destinationTasks)
 
             // updates(removed.task_id, destinationColIndex, destination.index)
 
@@ -66,7 +65,6 @@ const KanBan = (props) => {
         } else {
             ;[removed] = destinationTasks.splice(source.index, 1)
             destinationTasks.splice(destination.index, 0, removed)
-            console.log('destination.index', destinationTasks)
 
             // updates(removed.task_id, destinationColIndex, destination.index)
 
@@ -77,9 +75,8 @@ const KanBan = (props) => {
                 ...removed,
                 label: destinationColIndex,
             })
-            console.log('data', data)
         } catch (error) {
-            alert(error)
+            alert('avc', error)
         }
     }
 
@@ -93,7 +90,6 @@ const KanBan = (props) => {
 
     const createTaskHandler = (label) => {
         setnewTaskLabel(label)
-        console.log('label', label)
         setNewBoardModal(true)
     }
 
@@ -102,7 +98,6 @@ const KanBan = (props) => {
             const newData = [...prevData, newTask]
             return newData
         })
-        console.log('newTask', newTask)
     }
     return (
         <div className=" flex flex-col h-screen">
@@ -116,7 +111,7 @@ const KanBan = (props) => {
             />
             <div className="py-5 pl-6 flex flex-row items-center bg-slate-50 border-b">
                 <p className="text-2xl font-semibold text-stone-900 mr-3">
-                    Board 1
+                    {props.title}
                 </p>
                 <Button
                     className=" h-9 shadow-btn"
@@ -141,7 +136,7 @@ const KanBan = (props) => {
                                             TO DO
                                         </h3>
                                         <button
-                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-orange-500"
                                             onClick={() =>
                                                 createTaskHandler('1')
                                             }
@@ -217,7 +212,7 @@ const KanBan = (props) => {
                                             Inprogress
                                         </h3>
                                         <button
-                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-orange-500"
                                             onClick={() =>
                                                 createTaskHandler('2')
                                             }
@@ -294,7 +289,7 @@ const KanBan = (props) => {
                                             Inreview
                                         </h3>
                                         <button
-                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-orange-500"
                                             onClick={() =>
                                                 createTaskHandler('3')
                                             }
@@ -371,7 +366,7 @@ const KanBan = (props) => {
                                             Completed
                                         </h3>
                                         <button
-                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                                            className="transition-all bg-gray-100 w-8 h-8 rounded-full border border-gray-300 shadow-sm flex items-center justify-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-orange-500"
                                             onClick={() =>
                                                 createTaskHandler('4')
                                             }

@@ -3,34 +3,34 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import Input from '../Input'
 import { Toast } from 'primereact/toast'
+import { InputTextarea } from 'primereact/inputtextarea'
 
 import { useNavigate } from 'react-router-dom'
 
 import TopicApi from '../../../api/TopicApi'
 
-const AddNewTopic = (props) => {
+const TopicEdit = (props) => {
     const toast = useRef(null)
 
     const navigate = useNavigate()
 
-    const [newBoardName, setNewBoardName] = useState('')
+    const [TopicName, setTopicName] = useState(props.name)
     const [newBoardNameError, setNewBoardNameError] = useState('')
-
-    const [newBoardDesciption, setNewBoardDesciption] = useState('')
+    const [TopicDesciption, setTopicDesciption] = useState(props.description)
 
     const [loading, setLoading] = useState(false)
 
     const topicNameHandler = (e) => {
-        setNewBoardName(e.target.value)
+        setTopicName(e.target.value)
     }
     const topicdescriptionHandler = (e) => {
-        setNewBoardDesciption(e.target.value)
+        setTopicDesciption(e.target.value)
     }
 
     const SubmitHandler = async (e) => {
         e.preventDefault()
-        const topic_title = newBoardName
-        const topic_description = newBoardDesciption
+        const topic_title = TopicName
+        const topic_description = TopicDesciption
 
         setLoading(true)
 
@@ -41,13 +41,28 @@ const AddNewTopic = (props) => {
         }
 
         try {
-            const res = await TopicApi.create({
+            const res = await TopicApi.editTopic(props.id, {
                 topic_title,
                 topic_description,
             })
+            console.log('id', props.id)
             setLoading(false)
-            setNewBoardName('')
-            setNewBoardDesciption('')
+            console.log(res)
+            props.onFinis(props.id, topic_title, topic_description)
+            console.log('success')
+            setTopicName('')
+            setTopicDesciption('')
+            const suc = 'Topic updated successfully'
+            const show = () => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: `${suc}`,
+                    life: 3000,
+                })
+            }
+            show()
+            props.onVisble()
         } catch (err) {
             setLoading(false)
             const show = () => {
@@ -59,18 +74,6 @@ const AddNewTopic = (props) => {
                 })
             }
             show()
-        } finally {
-            const suc = 'Topic created successfully'
-            const show = () => {
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: `${suc}`,
-                    life: 3000,
-                })
-            }
-            show()
-            props.onVisble()
         }
     }
 
@@ -78,7 +81,7 @@ const AddNewTopic = (props) => {
         <>
             <Toast ref={toast} />
             <Dialog
-                header="New Topic"
+                header="Edit Topic"
                 visible={props.visible}
                 onHide={() => props.onVisble()}
                 style={{ width: '500px' }}
@@ -95,27 +98,30 @@ const AddNewTopic = (props) => {
                         Htmlfor="topicName"
                         id="email"
                         aria="topicName-help"
-                        value={newBoardName}
+                        value={TopicName}
                         onChange={topicNameHandler}
                         error={newBoardNameError}
                         help={newBoardNameError ? newBoardNameError : null}
                     />
-                    <Input
-                        name="topicdescription"
-                        type="text"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
-                        value={newBoardDesciption}
-                        onChange={topicdescriptionHandler}
-                        error={false}
-                        help={false}
-                    />
+
+                    <span className="p-float-label">
+                        <InputTextarea
+                            className="w-full"
+                            id="TopicDesciption"
+                            value={TopicDesciption}
+                            onChange={topicdescriptionHandler}
+                            rows={5}
+                            cols={30}
+                        />
+                        <label htmlFor="TopicDesciption">
+                            Topic Desciption
+                        </label>
+                    </span>
+
                     <Button
                         type="submit"
                         className="Bg-orange-600"
-                        label="Create"
+                        label="Save"
                         icon="pi pi-arrow-right"
                         iconPos="right"
                         loading={loading}
@@ -128,4 +134,4 @@ const AddNewTopic = (props) => {
     )
 }
 
-export default AddNewTopic
+export default TopicEdit

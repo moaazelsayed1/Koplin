@@ -44,9 +44,7 @@ const AddNewTask = (props) => {
         setLabel(props.labelId)
     }, [navigate, newTask])
 
-    console.log('newTask', newTask)
     const createTask = async (labelId) => {
-        console.log('labelId', labelId)
         try {
             const task = await TaskApi.create(boardId, { sectionId })
             //   const newData = [...data]
@@ -84,20 +82,6 @@ const AddNewTask = (props) => {
             // const newData = [...newtask]
             props.onFinis({ ...res.data.data })
             setLoading(false)
-            console.log('ressss', res)
-            console.log('success')
-        } catch (err) {
-            setLoading(false)
-            const show = () => {
-                toast.current.show({
-                    severity: 'info',
-                    summary: 'Info',
-                    detail: `${err?.data.error}`,
-                    life: 4000,
-                })
-            }
-            show()
-        } finally {
             const suc = 'Topic created successfully'
             const show = () => {
                 toast.current.show({
@@ -109,6 +93,17 @@ const AddNewTask = (props) => {
             }
             show()
             props.onVisble()
+        } catch (err) {
+            setLoading(false)
+            const show = () => {
+                toast.current.show({
+                    severity: 'warn',
+                    summary: 'Warning',
+                    detail: `${err ? err.data.error : 'Something went wrong'}`,
+                    life: 4000,
+                })
+            }
+            show()
         }
     }
 
