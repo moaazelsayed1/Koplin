@@ -1,6 +1,8 @@
 // REACT
 import React, { useEffect, useState } from 'react'
 import { Button } from 'primereact/button'
+import { InputText } from 'primereact/inputtext'
+import { Tooltip } from 'primereact/tooltip'
 
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -9,14 +11,21 @@ import TaskApi from '../../api/TaskApi'
 //MODALS
 import AddNewTask from './modals/AddNewTask'
 import { useNavigate } from 'react-router-dom'
+import BoardApi from '../../api/BoardApi'
 
 const KanBan = (props) => {
     const navigate = useNavigate()
-    const boardId = props.boardId
+    // const boardId = props.boardId
     const [data, setData] = useState('')
+    const [boardId, setboardId] = useState('')
+
+    const [editing, setediting] = useState(false)
+    const [newBoardName, setnewBoardName] = useState(`${props.title}`)
 
     useEffect(() => {
         setData(props.data)
+        setboardId(props.boardId)
+        setnewBoardName(props.title)
     }, [props.data, navigate])
 
     // Drag and drop position changer functions
@@ -99,6 +108,20 @@ const KanBan = (props) => {
             return newData
         })
     }
+
+    console.log('newBoardName', newBoardName)
+    const updateBoardName = async () => {
+        try {
+            const res = await BoardApi.Update(boardId, {
+                board_title: newBoardName,
+                description: props.description,
+                topicId: props.topicId,
+            })
+            setediting(false)
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <div className=" flex flex-col h-screen">
             <AddNewTask
@@ -110,16 +133,63 @@ const KanBan = (props) => {
                 key={newTaskLabel + boardId}
             />
             <div className="py-5 pl-6 flex flex-row items-center bg-slate-50 border-b">
-                <p className="text-2xl font-semibold text-stone-900 mr-3">
-                    {props.title}
-                </p>
-                <Button
-                    className=" h-9 shadow-btn"
-                    label="New Task"
-                    icon="pi pi-plus"
-                    size="small"
-                    onClick={() => createTaskHandler('1')}
-                />
+                {!editing ? (
+                    <>
+                        <p className="text-2xl font-semibold text-stone-900 mr-3">
+                            {newBoardName}
+                        </p>
+                        <Tooltip target=".pi-pencil" />
+                        <i
+                            className="transition-all pi pi-pencil mr-4 rounded-md hover:bg-slate-300 p-2"
+                            style={{
+                                fontSize: '1rem',
+                                color: '#708090',
+                                cursor: 'pointer',
+                            }}
+                            onClick={() => setediting(true)}
+                            data-pr-tooltip="Edit board name"
+                            data-pr-position="top"
+                            data-pr-at="right-16 bottom+24"
+                            data-pr-my="center center"
+                        ></i>
+                        <Button
+                            className=" h-9 shadow-btn"
+                            label="New Task"
+                            icon="pi pi-plus"
+                            size="small"
+                            onClick={() => createTaskHandler('1')}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <InputText
+                            value={newBoardName}
+                            onChange={(e) => setnewBoardName(e.target.value)}
+                            type="text"
+                            className="p-inputtext-sm h-9 mr-3"
+                            placeholder="Small"
+                        />
+
+                        <i
+                            onClick={updateBoardName}
+                            className="pi pi-check mr-2 hover:bg-green-200 p-1 rounded-md"
+                            style={{
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                color: '#2F9461',
+                            }}
+                        ></i>
+                        <i
+                            className="pi pi-times hover:bg-red-200 p-1 rounded-md"
+                            style={{
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                color: '#CD3636',
+                            }}
+                            onClick={() => setediting(false)}
+                        ></i>
+                    </>
+                )}
             </div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className="flex justify-items-start w-[calc(100vw-16rem)] overflow-x-auto overflow-y-hidden pl-6 pt-6 bg-[#F6F6F8] h-full">

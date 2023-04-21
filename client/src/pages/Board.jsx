@@ -8,6 +8,7 @@ const Board = () => {
     const { boardId } = useParams()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [topicId, settopicId] = useState('')
     const [lists, setLists] = useState([])
     const [icon, setIcon] = useState('')
     const navigate = useNavigate()
@@ -17,6 +18,7 @@ const Board = () => {
                 const res = await BoardApi.getOne(boardId)
                 setTitle(res.data.data.board_title)
                 setDescription(res.data.data.board_description)
+                settopicId(res.data.data.topic_id)
             } catch (error) {
                 alert(error)
             }
@@ -36,7 +38,13 @@ const Board = () => {
 
     return (
         <div>
-            <KanBan data={lists} boardId={boardId} title={title} />
+            <KanBan
+                data={lists}
+                boardId={boardId}
+                title={title}
+                description={description}
+                topicId={topicId}
+            />
         </div>
     )
 }

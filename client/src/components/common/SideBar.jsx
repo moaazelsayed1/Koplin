@@ -6,7 +6,7 @@ import AddNewTopic from './modals/AddNewTopic'
 import TopicApi from '../../api/TopicApi'
 import BoardApi from '../../api/BoardApi'
 import { setTopics } from '../../redux/features/topicSlice'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Tree } from 'primereact/tree'
 import { setBoards } from '../../redux/features/boardSlice'
 import TopicEdit from './modals/TopicEdit'
@@ -18,6 +18,8 @@ import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup me
 import AddNewBoard from './modals/AddNewBoard'
 
 const SideBar = () => {
+    const { boardId } = useParams()
+    console.log('balrdid', boardId)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.value)
@@ -25,7 +27,15 @@ const SideBar = () => {
     const boards = useSelector((state) => state.board.value)
 
     const [nodes, setNodes] = useState([])
-    const [selectedKey, setSelectedKey] = useState('')
+    const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
+    console.log(selectedKey)
+    const [expandedKeys, setExpandedKeys] = useState({})
+
+    useEffect(() => {
+        if (!boardId) {
+            setSelectedKey('')
+        }
+    }, [navigate])
 
     const onSelect = (event) => {
         if (event.node.url === undefined) return
@@ -57,8 +67,11 @@ const SideBar = () => {
         const getBoards = async () => {
             try {
                 const res = await BoardApi.getAll()
-                dispatch(setBoards(res.data.data))
-                console.log(res.data.data)
+                const boardsres = res.data.data.sort(
+                    (a, b) => a.board_id - b.board_id
+                )
+                dispatch(setBoards(boardsres))
+                console.log(boardsres)
             } catch (error) {
                 alert(error)
             }
@@ -304,6 +317,7 @@ const SideBar = () => {
                                 onSelect={onSelect}
                                 selectionMode="single"
                                 selectionKeys={selectedKey}
+                                expandedKeys={expandedKeys}
                                 onSelectionChange={(e) =>
                                     setSelectedKey(e.value)
                                 }

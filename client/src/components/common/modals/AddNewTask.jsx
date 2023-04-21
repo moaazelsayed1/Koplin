@@ -3,6 +3,8 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import Input from '../Input'
 import { Toast } from 'primereact/toast'
+import { InputTextarea } from 'primereact/inputtextarea'
+import { Dropdown } from 'primereact/dropdown'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -43,18 +45,6 @@ const AddNewTask = (props) => {
     useEffect(() => {
         setLabel(props.labelId)
     }, [navigate, newTask])
-
-    const createTask = async (labelId) => {
-        try {
-            const task = await TaskApi.create(boardId, { sectionId })
-            //   const newData = [...data]
-            //   const index = newData.findIndex(e => e.id === sectionId)
-            //   newData[index].tasks.unshift(task)
-            //   setData(newData)
-        } catch (err) {
-            alert(err)
-        }
-    }
 
     const SubmitHandler = async (e) => {
         e.preventDefault()
@@ -106,7 +96,13 @@ const AddNewTask = (props) => {
             show()
         }
     }
-
+    const cities = [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' },
+    ]
     return (
         <>
             <Toast ref={toast} />
@@ -138,6 +134,33 @@ const AddNewTask = (props) => {
                         error={newBoardNameError}
                         help={newBoardNameError ? newBoardNameError : null}
                     />
+
+                    <span className=" grow w-full p-float-label">
+                        <InputTextarea
+                            className="grow w-full"
+                            name="topicdescription"
+                            type="text"
+                            label="topic description"
+                            Htmlfor="topicdescription"
+                            id="email"
+                            aria="topicdescription-help"
+                            value={newTask[1]}
+                            onChange={(e) =>
+                                setnewTask((prevState) => [
+                                    prevState[0],
+                                    e.target.value,
+                                    ...prevState.slice(2),
+                                ])
+                            }
+                            rows={5}
+                            cols={30}
+                        />{' '}
+                        <label htmlFor="topicdescription">
+                            topic description
+                        </label>
+                    </span>
+
+                    {/* 
                     <Input
                         name="topicdescription"
                         type="text"
@@ -155,14 +178,14 @@ const AddNewTask = (props) => {
                         }
                         error={false}
                         help={false}
-                    />
+                    /> */}
                     <Input
-                        name="topicdescription"
+                        name="duedate"
                         type="date"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
+                        label="Due Date"
+                        Htmlfor="duedate"
+                        id="duedate"
+                        aria="duedate-help"
                         value={newTask[2]}
                         onChange={(e) =>
                             setnewTask((prevState) => [
@@ -178,28 +201,36 @@ const AddNewTask = (props) => {
                         error={false}
                         help={false}
                     />
-                    <Input
-                        name="topicdescription"
-                        type="number"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
-                        value={newTask[4]}
-                        onChange={(e) =>
-                            setnewTask((prevState) => [
-                                prevState[0],
-                                prevState[1],
-                                prevState[2],
-                                prevState[3],
-                                e.target.value,
-                                prevState[5],
-                                prevState[6],
-                            ])
-                        }
-                        error={false}
-                        help={false}
-                    />
+
+                    <span className="p-float-label">
+                        <Dropdown
+                            name="Assignee"
+                            type="number"
+                            label="Assign this task to"
+                            Htmlfor="Assignee"
+                            id="Assignee"
+                            aria="Assignee-help"
+                            value={newTask[4]}
+                            onChange={(e) =>
+                                setnewTask((prevState) => [
+                                    prevState[0],
+                                    prevState[1],
+                                    prevState[2],
+                                    prevState[3],
+                                    e.target.value,
+                                    prevState[5],
+                                    prevState[6],
+                                ])
+                            }
+                            options={cities}
+                            optionLabel="name"
+                            // editable
+                            placeholder="Select a member"
+                            className="w-full md:w-14rem"
+                        />{' '}
+                        <label htmlFor="Assignee">Select a Member</label>
+                    </span>
+
                     <Button
                         type="submit"
                         className="Bg-orange-600"
