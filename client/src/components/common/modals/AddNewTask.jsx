@@ -141,7 +141,7 @@ const AddNewTask = (props) => {
                             name="topicdescription"
                             type="text"
                             label="topic description"
-                            Htmlfor="topicdescription"
+                            htmlFor="topicdescription"
                             id="email"
                             aria="topicdescription-help"
                             value={newTask[1]}
@@ -159,33 +159,13 @@ const AddNewTask = (props) => {
                             topic description
                         </label>
                     </span>
-
-                    {/* 
-                    <Input
-                        name="topicdescription"
-                        type="text"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
-                        value={newTask[1]}
-                        onChange={(e) =>
-                            setnewTask((prevState) => [
-                                prevState[0],
-                                e.target.value,
-                                ...prevState.slice(2),
-                            ])
-                        }
-                        error={false}
-                        help={false}
-                    /> */}
                     <Input
                         name="duedate"
                         type="date"
                         label="Due Date"
                         Htmlfor="duedate"
                         id="duedate"
-                        aria="duedate-help"
+                        aria-describedby="duedate-help"
                         value={newTask[2]}
                         onChange={(e) =>
                             setnewTask((prevState) => [
@@ -209,7 +189,7 @@ const AddNewTask = (props) => {
                             label="Assign this task to"
                             Htmlfor="Assignee"
                             id="Assignee"
-                            aria="Assignee-help"
+                            aria-describedby="Assignee-help"
                             value={newTask[4]}
                             onChange={(e) =>
                                 setnewTask((prevState) => [

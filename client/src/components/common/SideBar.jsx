@@ -10,8 +10,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Tree } from 'primereact/tree'
 import { setBoards } from '../../redux/features/boardSlice'
 import TopicEdit from './modals/TopicEdit'
-import DeleteTopic from './modals/DeleteTheTopic'
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import { ConfirmPopup } from 'primereact/confirmpopup' // To use <ConfirmPopup> tag
 import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup method
@@ -61,7 +59,7 @@ const SideBar = () => {
                 )
                 dispatch(setTopics(finres))
             } catch (error) {
-                alert(error)
+                alert('dsad', error)
             }
         }
 
@@ -74,7 +72,7 @@ const SideBar = () => {
                 dispatch(setBoards(boardsres))
                 console.log(boardsres)
             } catch (error) {
-                alert(error)
+                alert('board err', error)
             }
         }
 
@@ -205,7 +203,7 @@ const SideBar = () => {
 
         confirmPopup({
             target: event.currentTarget,
-            message: 'Do you want to delete this record?',
+            message: 'Do you want to delete this topic?',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
             accept,

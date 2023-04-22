@@ -20,7 +20,8 @@ const Board = () => {
                 setDescription(res.data.data.board_description)
                 settopicId(res.data.data.topic_id)
             } catch (error) {
-                alert(error)
+                // alert('inside board erro', error)
+                navigate('/')
             }
         }
 
