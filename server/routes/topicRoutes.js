@@ -23,7 +23,12 @@ router.get('/', topicController.getAllTopics)
 
 router.get('/:id', topicController.getTopicById)
 
-router.post('/', authController.protect, topicController.createTopic)
+router.post(
+  '/',
+  authController.protect,
+  topicController.setCreator,
+  topicController.createTopic
+)
 
 router.put('/:id', topicController.updateTopic)
 

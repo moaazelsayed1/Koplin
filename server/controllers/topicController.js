@@ -37,6 +37,11 @@ exports.getTopicsByUser = catchAsync(async (req, res) => {
   })
 })
 
+exports.setCreator = (req, res, next) => {
+  req.body.created_by = req.user.user_id
+  next()
+}
+
 exports.getAllTopics = Factory.getAll(Topic)
 
 exports.createTopic = Factory.createOne(Topic)
