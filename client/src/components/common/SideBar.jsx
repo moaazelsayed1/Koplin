@@ -27,6 +27,7 @@ const SideBar = () => {
     const boards = useSelector((state) => state.board.value)
 
     const [nodes, setNodes] = useState([])
+    console.log('nodes', nodes)
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     console.log(selectedKey)
     const [expandedKeys, setExpandedKeys] = useState({})
@@ -267,6 +268,15 @@ const SideBar = () => {
         )
     }
 
+    const AddTheNewTopic = (topic) => {
+        const newParent = {
+            key: topic.topic_id,
+            label: topic.topic_title,
+            description: topic.topic_description,
+            children: [],
+        }
+        setNodes([...nodes, newParent])
+    }
     return (
         <>
             {' '}
@@ -287,7 +297,11 @@ const SideBar = () => {
                 name={EditTopicName}
                 description={EditTopicDescription}
             />
-            <AddNewTopic visible={NewTopicModal} onVisble={modalVisible} />
+            <AddNewTopic
+                visible={NewTopicModal}
+                onVisble={modalVisible}
+                onFinis={AddTheNewTopic}
+            />
             <div className="flex flex-col h-screen sticky top-0 w-64 bg-white border-r px-4">
                 <div className="flex items-center justify-start h-14  mt-2 mb-4 ">
                     <img src={fullLogo} alt="logo" className="h-[32px]" />
