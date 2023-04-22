@@ -1,10 +1,17 @@
+const path = require('path')
 const express = require('express')
 const taskController = require('../controllers/taskController')
+const authController = require(path.join(
+  __dirname,
+  '..',
+  'controllers',
+  'authController'
+))
 const router = express.Router()
 
 router.get('/board/:boardId', taskController.getTasksByBoard)
 
-router.get('/:userId', taskController.getTasksByUser)
+router.get('/myTasks', authController.protect, taskController.getTasksByUser)
 
 router.get('/', taskController.getAllTasks)
 

@@ -4,7 +4,7 @@ const Factory = require(path.join(__dirname, 'handlerFactory'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
 
 exports.getTasksByUser = catchAsync(async (req, res, next) => {
-  const userId = req.params.userId
+  const userId = req.user.user_id
   const tasks = await Task.findAll({
     where: {
       assignee_id: userId,

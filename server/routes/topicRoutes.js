@@ -17,7 +17,7 @@ const router = express.Router()
 
 router.get('/:topicId/user/:userId', topicController.addUserToTopic)
 
-router.get('/:userId/topics', topicController.getTopicsByUser)
+router.get('/myTopics', authController.protect, topicController.getTopicsByUser)
 
 router.get('/', topicController.getAllTopics)
 

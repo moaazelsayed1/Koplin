@@ -19,7 +19,7 @@ exports.addUserToTopic = catchAsync(async (req, res) => {
 })
 
 exports.getTopicsByUser = catchAsync(async (req, res) => {
-  const userId = req.params.userId
+  const userId = req.user.user_id
 
   const topicUsers = await Topic_User.findAll({
     where: { user_id: userId },
