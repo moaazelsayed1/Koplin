@@ -277,6 +277,37 @@ const SideBar = () => {
         }
         setNodes([...nodes, newParent])
     }
+
+    const addChildToParent = (parentKey, children) => {
+        setNodes((nodes) => {
+            // find the parent node to add children to
+            const parentNodeIndex = nodes.findIndex(
+                (node) => node.key === parentKey
+            )
+
+            if (parentNodeIndex === -1) {
+                // parent not found, return original state
+                console.log('parent not found')
+                return nodes
+            }
+
+            // add the children to the parent node
+            const parentNode = nodes[parentNodeIndex]
+            const newParentNode = {
+                ...parentNode,
+                children: [...parentNode.children, ...children],
+            }
+
+            // create a new array of nodes with the updated parent node
+            const newNodes = [...nodes]
+            newNodes[parentNodeIndex] = newParentNode
+            console.log('parent found', newNodes)
+
+            // return the updated nodes state
+            return newNodes
+        })
+    }
+
     return (
         <>
             {' '}
@@ -286,6 +317,7 @@ const SideBar = () => {
                 onVisble={AddBoardVisible}
                 topicId={addBoardtoTopic}
                 key={+addBoardtoTopic + 6}
+                onFinis={addChildToParent}
             />
             <ConfirmPopup />
             <TopicEdit

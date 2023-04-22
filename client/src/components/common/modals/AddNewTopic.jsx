@@ -112,9 +112,8 @@ const AddNewTopic = (props) => {
                             name="topicdescription"
                             type="text"
                             label="topic description"
-                            Htmlfor="topicdescription"
+                            htmlFor="topicdescription"
                             id="email"
-                            aria="topicdescription-help"
                             value={newBoardDesciption}
                             onChange={topicdescriptionHandler}
                             rows={5}

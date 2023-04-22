@@ -37,6 +37,7 @@ const AddNewBoard = (props) => {
         e.preventDefault()
         const board_title = newBoardName
         const board_description = newBoardDesciption
+        const topic_id = TopicId
 
         setLoading(true)
 
@@ -45,17 +46,24 @@ const AddNewBoard = (props) => {
             setLoading(false)
             return
         }
-        const topic_id = TopicId
         try {
             const res = await BoardApi.create({
                 board_title,
                 board_description,
                 topic_id,
             })
-            console.log(res)
+            console.log('new boarddddd', res)
             setLoading(false)
             setNewBoardName('')
             setNewBoardDesciption('')
+            props.onFinis(topic_id, [
+                {
+                    key: `${res.data.data.board_id}`,
+                    label: `${res.data.data.board_title}`,
+                    description: `${res.data.data.board_description}`,
+                    url: `/boards/${res.data.data.board_id}`,
+                },
+            ])
         } catch (err) {
             setLoading(false)
             const show = () => {
@@ -68,7 +76,7 @@ const AddNewBoard = (props) => {
             }
             show()
         } finally {
-            const suc = 'Topic created successfully'
+            const suc = 'Board created successfully'
             const show = () => {
                 toast.current.show({
                     severity: 'success',
@@ -102,7 +110,7 @@ const AddNewBoard = (props) => {
                         label="Board Name"
                         Htmlfor="BoardName"
                         id="Board"
-                        aria="BoardName-help"
+                        aria-describedby="BoardName-help"
                         value={newBoardName}
                         onChange={topicNameHandler}
                         error={newBoardNameError}
@@ -115,9 +123,8 @@ const AddNewBoard = (props) => {
                             name="boarddescription"
                             type="text"
                             label="Board description"
-                            Htmlfor="boarddescription"
                             id="email"
-                            aria="boarddescription-help"
+                            aria-describedby="boarddescription-help"
                             value={newBoardDesciption}
                             onChange={topicdescriptionHandler}
                             rows={5}
