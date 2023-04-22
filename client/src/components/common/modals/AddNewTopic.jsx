@@ -3,6 +3,7 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import Input from '../Input'
 import { Toast } from 'primereact/toast'
+import { InputTextarea } from 'primereact/inputtextarea'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -46,20 +47,13 @@ const AddNewTopic = (props) => {
                 topic_description,
             })
             setLoading(false)
+            props.onFinis(res.data.data)
+            console.log('bbb')
+            // console.log('newtopic', res.data.data)
+
             setNewBoardName('')
             setNewBoardDesciption('')
-        } catch (err) {
-            setLoading(false)
-            const show = () => {
-                toast.current.show({
-                    severity: 'info',
-                    summary: 'Info',
-                    detail: `${err.data.error}`,
-                    life: 4000,
-                })
-            }
-            show()
-        } finally {
+
             const suc = 'Topic created successfully'
             const show = () => {
                 toast.current.show({
@@ -71,6 +65,17 @@ const AddNewTopic = (props) => {
             }
             show()
             props.onVisble()
+        } catch (err) {
+            setLoading(false)
+            const show = () => {
+                toast.current.show({
+                    severity: 'warn',
+                    summary: 'Info',
+                    detail: "Can't create topic",
+                    life: 4000,
+                })
+            }
+            show()
         }
     }
 
@@ -100,18 +105,23 @@ const AddNewTopic = (props) => {
                         error={newBoardNameError}
                         help={newBoardNameError ? newBoardNameError : null}
                     />
-                    <Input
-                        name="topicdescription"
-                        type="text"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
-                        value={newBoardDesciption}
-                        onChange={topicdescriptionHandler}
-                        error={false}
-                        help={false}
-                    />
+
+                    <span className="p-float-label">
+                        <InputTextarea
+                            className="w-full"
+                            name="topicdescription"
+                            type="text"
+                            label="topic description"
+                            Htmlfor="topicdescription"
+                            id="email"
+                            aria="topicdescription-help"
+                            value={newBoardDesciption}
+                            onChange={topicdescriptionHandler}
+                            rows={5}
+                            cols={30}
+                        />
+                        <label htmlFor="username">Topic description</label>
+                    </span>
                     <Button
                         type="submit"
                         className="Bg-orange-600"

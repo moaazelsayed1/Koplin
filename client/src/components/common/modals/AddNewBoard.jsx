@@ -3,6 +3,7 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import Input from '../Input'
 import { Toast } from 'primereact/toast'
+import { InputTextarea } from 'primereact/inputtextarea'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -85,7 +86,7 @@ const AddNewBoard = (props) => {
         <>
             <Toast ref={toast} />
             <Dialog
-                header="New Topic"
+                header="New Board"
                 visible={props.visible}
                 onHide={() => props.onVisble()}
                 style={{ width: '500px' }}
@@ -96,29 +97,35 @@ const AddNewBoard = (props) => {
                     onSubmit={SubmitHandler}
                 >
                     <Input
-                        name="topicname"
+                        name="boardname"
                         type="text"
-                        label="Topic Name"
-                        Htmlfor="topicName"
-                        id="email"
-                        aria="topicName-help"
+                        label="Board Name"
+                        Htmlfor="BoardName"
+                        id="Board"
+                        aria="BoardName-help"
                         value={newBoardName}
                         onChange={topicNameHandler}
                         error={newBoardNameError}
                         help={newBoardNameError ? newBoardNameError : null}
                     />
-                    <Input
-                        name="topicdescription"
-                        type="text"
-                        label="topic description"
-                        Htmlfor="topicdescription"
-                        id="email"
-                        aria="topicdescription-help"
-                        value={newBoardDesciption}
-                        onChange={topicdescriptionHandler}
-                        error={false}
-                        help={false}
-                    />
+
+                    <span className="p-float-label">
+                        <InputTextarea
+                            className="w-full"
+                            name="boarddescription"
+                            type="text"
+                            label="Board description"
+                            Htmlfor="boarddescription"
+                            id="email"
+                            aria="boarddescription-help"
+                            value={newBoardDesciption}
+                            onChange={topicdescriptionHandler}
+                            rows={5}
+                            cols={30}
+                        />
+                        <label htmlFor="username">Board description</label>
+                    </span>
+
                     <Button
                         type="submit"
                         className="Bg-orange-600"
