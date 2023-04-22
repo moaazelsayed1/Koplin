@@ -6,6 +6,12 @@ const topicController = require(path.join(
   'controllers',
   'topicController'
 ))
+const authController = require(path.join(
+  __dirname,
+  '..',
+  'controllers',
+  'authController'
+))
 
 const router = express.Router()
 
@@ -17,7 +23,7 @@ router.get('/', topicController.getAllTopics)
 
 router.get('/:id', topicController.getTopicById)
 
-router.post('/', topicController.createTopic)
+router.post('/', authController.protect, topicController.createTopic)
 
 router.put('/:id', topicController.updateTopic)
 
