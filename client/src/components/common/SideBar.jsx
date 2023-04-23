@@ -62,7 +62,6 @@ const SideBar = () => {
                     success = true
                 } catch (error) {
                     retries--
-                    alert(error)
                 }
             }
         }
@@ -140,6 +139,8 @@ const SideBar = () => {
         //WIP
         try {
             const res = await UserApi.LogOut()
+            console.log(res)
+            dispatch(setUser(null))
             localStorage.removeItem('token')
             navigate('/login')
         } catch (error) {}

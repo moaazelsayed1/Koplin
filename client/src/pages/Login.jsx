@@ -84,7 +84,7 @@ const Login = () => {
                 <Input
                     name="email"
                     type="text"
-                    label="Username"
+                    label="Email"
                     Htmlfor="username"
                     id="email"
                     aria="username-help"
