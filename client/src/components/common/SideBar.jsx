@@ -10,8 +10,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Tree } from 'primereact/tree'
 import { setBoards } from '../../redux/features/boardSlice'
 import TopicEdit from './modals/TopicEdit'
-import DeleteTopic from './modals/DeleteTheTopic'
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import { ConfirmPopup } from 'primereact/confirmpopup' // To use <ConfirmPopup> tag
 import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup method
@@ -61,7 +59,7 @@ const SideBar = () => {
                 )
                 dispatch(setTopics(finres))
             } catch (error) {
-                alert(error)
+                alert('dsad', error)
             }
         }
 
@@ -74,7 +72,7 @@ const SideBar = () => {
                 dispatch(setBoards(boardsres))
                 console.log(boardsres)
             } catch (error) {
-                alert(error)
+                alert('board err', error)
             }
         }
 
@@ -205,7 +203,7 @@ const SideBar = () => {
 
         confirmPopup({
             target: event.currentTarget,
-            message: 'Do you want to delete this record?',
+            message: 'Do you want to delete this topic?',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
             accept,
@@ -277,6 +275,37 @@ const SideBar = () => {
         }
         setNodes([...nodes, newParent])
     }
+
+    const addChildToParent = (parentKey, children) => {
+        setNodes((nodes) => {
+            // find the parent node to add children to
+            const parentNodeIndex = nodes.findIndex(
+                (node) => node.key === parentKey
+            )
+
+            if (parentNodeIndex === -1) {
+                // parent not found, return original state
+                console.log('parent not found')
+                return nodes
+            }
+
+            // add the children to the parent node
+            const parentNode = nodes[parentNodeIndex]
+            const newParentNode = {
+                ...parentNode,
+                children: [...parentNode.children, ...children],
+            }
+
+            // create a new array of nodes with the updated parent node
+            const newNodes = [...nodes]
+            newNodes[parentNodeIndex] = newParentNode
+            console.log('parent found', newNodes)
+
+            // return the updated nodes state
+            return newNodes
+        })
+    }
+
     return (
         <>
             {' '}
@@ -286,6 +315,7 @@ const SideBar = () => {
                 onVisble={AddBoardVisible}
                 topicId={addBoardtoTopic}
                 key={+addBoardtoTopic + 6}
+                onFinis={addChildToParent}
             />
             <ConfirmPopup />
             <TopicEdit
