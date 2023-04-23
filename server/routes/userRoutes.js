@@ -15,6 +15,7 @@ const router = express.Router()
 
 router.post('/signup', authController.signup)
 router.post('/login', authController.login)
+router.get('/logout', authController.logout)
 
 router.patch(
   '/updateMyPassword',
@@ -43,7 +44,12 @@ router.get('/topics/:id/users', userController.getUsersByTopic)
 router.get('/', userController.getAllUsers)
 router.get('/:id', userController.getUserById)
 
-router.post('/', userController.createUser)
+router.post(
+  '/',
+  userController.checkPhoto,
+  userController.uploadUserPhotoToCloudinary,
+  userController.createUser
+)
 
 router.patch('/:id', userController.updateUser)
 
