@@ -1,8 +1,12 @@
 // REACT
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { Tooltip } from 'primereact/tooltip'
+import { Menu } from 'primereact/menu'
+import { ConfirmDialog } from 'primereact/confirmdialog' // For <ConfirmDialog /> component
+import { confirmDialog } from 'primereact/confirmdialog' // For confirmDialog method
+import { Sidebar } from 'primereact/sidebar'
 
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -10,17 +14,76 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import TaskApi from '../../api/TaskApi'
 //MODALS
 import AddNewTask from './modals/AddNewTask'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import BoardApi from '../../api/BoardApi'
+import InviteMember from './modals/InviteMember'
+import AssigneeLabel from './AssigneeLabel'
+import TaskOverlay from './modals/TaskOverlay'
 
 const KanBan = (props) => {
     const navigate = useNavigate()
-    // const boardId = props.boardId
+    const menu = useRef(null)
     const [data, setData] = useState('')
+    console.log('data', data)
     const [boardId, setboardId] = useState('')
 
     const [editing, setediting] = useState(false)
     const [newBoardName, setnewBoardName] = useState(`${props.title}`)
+
+    const [inviteMemberModal, setInviteMemberModal] = useState(false)
+    const [visibleRight, setVisibleRight] = useState(false)
+
+    const deletetheboard = (event) => {
+        const accept = async () => {
+            try {
+                const res = await BoardApi.delete(boardId)
+
+                navigate('/')
+            } catch (error) {
+                toast.current.show({
+                    severity: 'warn',
+                    summary: 'Rejected',
+                    detail: 'We could not delete this board',
+                    life: 3000,
+                })
+            }
+        }
+
+        const reject = () => {}
+
+        confirmDialog({
+            target: event.currentTarget,
+            header: 'Delete Confirmation',
+            message: 'Do you want to delete this board?',
+            icon: 'pi pi-info-circle',
+            acceptClassName: 'p-button-danger',
+            accept,
+            reject,
+        })
+    }
+
+    const items = [
+        {
+            label: 'Options',
+            items: [
+                {
+                    label: 'Invite members',
+                    icon: 'pi  pi-user-plus',
+                    command: () => {
+                        setInviteMemberModal(true)
+                    },
+                },
+                {
+                    label: 'Delete board',
+                    icon: 'pi pi-trash',
+                    command: (e) => deletetheboard(e),
+                },
+            ],
+        },
+    ]
+
+    console.log('inviteMemberModal', inviteMemberModal)
+    const parser = new DOMParser()
 
     useEffect(() => {
         setData(props.data)
@@ -122,74 +185,125 @@ const KanBan = (props) => {
             console.log(err)
         }
     }
+    const [taskShown, settaskShown] = useState({})
+    const overlayTaskHandler = (task) => {
+        console.log('task', task)
+        settaskShown(task)
+        setVisibleRight(true)
+    }
+
+    const onEditTaskHandler = (id, updatedTask) => {
+        const taskIndex = data.findIndex((task) => task.task_id === id)
+        if (taskIndex !== -1) {
+            const newData = [...data]
+            newData[taskIndex] = updatedTask
+            setData(newData)
+        }
+        console.log('tasks', data)
+    }
+
+    const onDeleteTaskHandler = (id) => {
+        const taskIndex = data.findIndex((task) => task.task_id === id)
+        if (taskIndex !== -1) {
+            const newData = [...data]
+            newData.splice(taskIndex, 1)
+            setData(newData)
+        }
+    }
+
     return (
         <div className=" flex flex-col h-screen">
+            <ConfirmDialog />
+
+            <InviteMember
+                visible={inviteMemberModal}
+                onVisble={() => setInviteMemberModal(false)}
+                topicId={props.topicId}
+            />
             <AddNewTask
                 visible={NewBoardModal}
                 onVisble={modalVisible}
                 boardId={boardId}
+                topicId={props.topicId}
                 labelId={newTaskLabel}
                 onFinis={AddTheNewTask}
                 key={newTaskLabel + boardId}
             />
-            <div className="py-5 pl-6 flex flex-row items-center bg-slate-50 border-b">
-                {!editing ? (
-                    <>
-                        <p className="text-2xl font-semibold text-stone-900 mr-3">
-                            {newBoardName}
-                        </p>
-                        <Tooltip target=".pi-pencil" />
-                        <i
-                            className="transition-all pi pi-pencil mr-4 rounded-md hover:bg-slate-300 p-2"
-                            style={{
-                                fontSize: '1rem',
-                                color: '#708090',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => setediting(true)}
-                            data-pr-tooltip="Edit board name"
-                            data-pr-position="top"
-                            data-pr-at="right-16 bottom+24"
-                            data-pr-my="center center"
-                        ></i>
-                        <Button
-                            className=" h-9 shadow-btn"
-                            label="New Task"
-                            icon="pi pi-plus"
-                            size="small"
-                            onClick={() => createTaskHandler('1')}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <InputText
-                            value={newBoardName}
-                            onChange={(e) => setnewBoardName(e.target.value)}
-                            type="text"
-                            className="p-inputtext-sm h-9 mr-3"
-                            placeholder="Small"
-                        />
+            <div className="py-5 px-6 flex flex-row items-center justify-between bg-slate-50 border-b">
+                <div className="flex flex-row">
+                    {!editing ? (
+                        <>
+                            <p className="text-2xl font-semibold text-stone-900 mr-3">
+                                {newBoardName}
+                            </p>
+                            <Tooltip target=".pi-pencil" />
+                            <i
+                                className="transition-all pi pi-pencil mr-4 rounded-md hover:bg-slate-300 p-2"
+                                style={{
+                                    fontSize: '1rem',
+                                    color: '#708090',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => setediting(true)}
+                                data-pr-tooltip="Edit board name"
+                                data-pr-position="top"
+                                data-pr-at="right-16 bottom+24"
+                                data-pr-my="center center"
+                            ></i>
+                            <Button
+                                className=" h-9 shadow-btn"
+                                label="New Task"
+                                icon="pi pi-plus"
+                                size="small"
+                                onClick={() => createTaskHandler('1')}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <InputText
+                                value={newBoardName}
+                                onChange={(e) =>
+                                    setnewBoardName(e.target.value)
+                                }
+                                type="text"
+                                className="p-inputtext-sm h-9 mr-3"
+                                placeholder="Small"
+                            />
 
-                        <i
-                            onClick={updateBoardName}
-                            className="pi pi-check mr-2 hover:bg-green-200 p-1 rounded-md"
-                            style={{
-                                fontSize: '1rem',
-                                cursor: 'pointer',
-                                color: '#2F9461',
-                            }}
-                        ></i>
-                        <i
-                            className="pi pi-times hover:bg-red-200 p-1 rounded-md"
-                            style={{
-                                fontSize: '1rem',
-                                cursor: 'pointer',
-                                color: '#CD3636',
-                            }}
-                            onClick={() => setediting(false)}
-                        ></i>
-                    </>
-                )}
+                            <i
+                                onClick={updateBoardName}
+                                className="pi pi-check mr-2 hover:bg-green-200 p-1 rounded-md"
+                                style={{
+                                    fontSize: '1rem',
+                                    cursor: 'pointer',
+                                    color: '#2F9461',
+                                }}
+                            ></i>
+                            <i
+                                className="pi pi-times hover:bg-red-200 p-1 rounded-md"
+                                style={{
+                                    fontSize: '1rem',
+                                    cursor: 'pointer',
+                                    color: '#CD3636',
+                                }}
+                                onClick={() => setediting(false)}
+                            ></i>
+                        </>
+                    )}
+                </div>
+                <div className="flex">
+                    <Menu className="" model={items} popup ref={menu} />
+                    <Button
+                        className=" h-9 "
+                        size="small"
+                        // outlined
+                        text
+                        severity="help"
+                        label=""
+                        icon="pi pi-bars"
+                        onClick={(e) => menu.current.toggle(e)}
+                    />
+                </div>
             </div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className="flex justify-items-start w-[calc(100vw-16rem)] overflow-x-auto overflow-y-hidden pl-6 pt-6 bg-[#F6F6F8] h-full">
@@ -232,10 +346,15 @@ const KanBan = (props) => {
                                                             snapshot
                                                         ) => (
                                                             <div
+                                                                onClick={() =>
+                                                                    overlayTaskHandler(
+                                                                        task
+                                                                    )
+                                                                }
                                                                 className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
-                                                                        : 'cursor-default	'
+                                                                        : 'cursor-pointer'
                                                                 }`}
                                                                 ref={
                                                                     provided.innerRef
@@ -250,12 +369,28 @@ const KanBan = (props) => {
                                                                 </h2>
                                                                 <p className="carddescription text-base font-medium text-[#7A7493]">
                                                                     {
-                                                                        task.task_description
+                                                                        parser
+                                                                            ?.parseFromString(
+                                                                                task.task_description,
+                                                                                'text/html'
+                                                                            )
+                                                                            .querySelector(
+                                                                                'p'
+                                                                            )
+                                                                            ?.textContent
                                                                     }
                                                                 </p>
-                                                                <h4>
-                                                                    {task.label}
-                                                                </h4>
+                                                                <div className="flex flex-row items-center justify-between">
+                                                                    <AssigneeLabel
+                                                                        id={
+                                                                            task.assignee_id
+                                                                        }
+                                                                        due={
+                                                                            task.due_date
+                                                                        }
+                                                                    />
+                                                                    <p>pz</p>
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </Draggable>
@@ -307,10 +442,15 @@ const KanBan = (props) => {
                                                             snapshot
                                                         ) => (
                                                             <div
+                                                                onClick={() =>
+                                                                    overlayTaskHandler(
+                                                                        task
+                                                                    )
+                                                                }
                                                                 className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
-                                                                        : 'cursor-default	'
+                                                                        : 'cursor-pointer'
                                                                 }`}
                                                                 ref={
                                                                     provided.innerRef
@@ -325,12 +465,28 @@ const KanBan = (props) => {
                                                                 </h2>
                                                                 <p className="carddescription text-base font-medium text-[#7A7493]">
                                                                     {
-                                                                        task.task_description
+                                                                        parser
+                                                                            ?.parseFromString(
+                                                                                task.task_description,
+                                                                                'text/html'
+                                                                            )
+                                                                            .querySelector(
+                                                                                'p'
+                                                                            )
+                                                                            ?.textContent
                                                                     }
                                                                 </p>
-                                                                <h4>
-                                                                    {task.label}
-                                                                </h4>
+                                                                <div className="flex flex-row items-center justify-between">
+                                                                    <AssigneeLabel
+                                                                        id={
+                                                                            task.assignee_id
+                                                                        }
+                                                                        due={
+                                                                            task.due_date
+                                                                        }
+                                                                    />
+                                                                    <p>p</p>
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </Draggable>
@@ -384,10 +540,15 @@ const KanBan = (props) => {
                                                             snapshot
                                                         ) => (
                                                             <div
+                                                                onClick={() =>
+                                                                    overlayTaskHandler(
+                                                                        task
+                                                                    )
+                                                                }
                                                                 className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
-                                                                        : 'cursor-default	'
+                                                                        : 'cursor-pointer	'
                                                                 }`}
                                                                 ref={
                                                                     provided.innerRef
@@ -402,12 +563,28 @@ const KanBan = (props) => {
                                                                 </h2>
                                                                 <p className="carddescription text-base font-medium text-[#7A7493]">
                                                                     {
-                                                                        task.task_description
+                                                                        parser
+                                                                            ?.parseFromString(
+                                                                                task.task_description,
+                                                                                'text/html'
+                                                                            )
+                                                                            .querySelector(
+                                                                                'p'
+                                                                            )
+                                                                            ?.textContent
                                                                     }
                                                                 </p>
-                                                                <h4>
-                                                                    {task.label}
-                                                                </h4>
+                                                                <div className="flex flex-row items-center justify-between">
+                                                                    <AssigneeLabel
+                                                                        id={
+                                                                            task.assignee_id
+                                                                        }
+                                                                        due={
+                                                                            task.due_date
+                                                                        }
+                                                                    />
+                                                                    <p>p</p>
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </Draggable>
@@ -461,10 +638,15 @@ const KanBan = (props) => {
                                                             snapshot
                                                         ) => (
                                                             <div
-                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
+                                                                onClick={() =>
+                                                                    overlayTaskHandler(
+                                                                        task
+                                                                    )
+                                                                }
+                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg  ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
-                                                                        : 'cursor-default	'
+                                                                        : 'cursor-pointer'
                                                                 }`}
                                                                 ref={
                                                                     provided.innerRef
@@ -479,12 +661,28 @@ const KanBan = (props) => {
                                                                 </h2>
                                                                 <p className="carddescription text-base font-medium text-[#7A7493]">
                                                                     {
-                                                                        task.task_description
+                                                                        parser
+                                                                            ?.parseFromString(
+                                                                                task.task_description,
+                                                                                'text/html'
+                                                                            )
+                                                                            .querySelector(
+                                                                                'p'
+                                                                            )
+                                                                            ?.textContent
                                                                     }
                                                                 </p>
-                                                                <h4>
-                                                                    {task.label}
-                                                                </h4>
+                                                                <div className="flex flex-row items-center justify-between">
+                                                                    <AssigneeLabel
+                                                                        id={
+                                                                            task.assignee_id
+                                                                        }
+                                                                        due={
+                                                                            task.due_date
+                                                                        }
+                                                                    />
+                                                                    <p>p</p>
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </Draggable>
@@ -499,6 +697,13 @@ const KanBan = (props) => {
                     {/* ----- 3 ----- */}
                 </div>
             </DragDropContext>
+            <TaskOverlay
+                visible={visibleRight}
+                onHide={() => setVisibleRight(false)}
+                task={taskShown}
+                onDelete={onDeleteTaskHandler}
+                onFinis={onEditTaskHandler}
+            />
         </div>
     )
 }

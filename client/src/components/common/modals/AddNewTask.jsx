@@ -5,6 +5,7 @@ import Input from '../Input'
 import { Toast } from 'primereact/toast'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { Dropdown } from 'primereact/dropdown'
+import { Editor } from 'primereact/editor'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +14,20 @@ import TaskApi from '../../../api/TaskApi'
 import formatDate from '../../../utils/date'
 
 const AddNewTask = (props) => {
+    const renderHeader = () => {
+        return (
+            <span className="ql-formats">
+                <button className="ql-bold" aria-label="Bold"></button>
+                <button className="ql-italic" aria-label="Italic"></button>
+                <button
+                    className="ql-underline"
+                    aria-label="Underline"
+                ></button>
+            </span>
+        )
+    }
+
+    const header = renderHeader()
     const toast = useRef(null)
 
     const navigate = useNavigate()
@@ -23,6 +38,8 @@ const AddNewTask = (props) => {
     const [newBoardDesciption, setNewBoardDesciption] = useState('')
 
     const [loading, setLoading] = useState(false)
+
+    const [topicMembers, setTopicMembers] = useState([])
 
     const topicNameHandler = (e) => {
         setNewBoardName(e.target.value)
@@ -41,9 +58,24 @@ const AddNewTask = (props) => {
         Label,
         '7',
     ])
-
+    console.log('new task', newTask)
     useEffect(() => {
         setLabel(props.labelId)
+        const members = async () => {
+            try {
+                const res = await TaskApi.members(props.topicId)
+                const topicMembersRes = res.data.users.map((user) => ({
+                    name: user.username,
+                    code: user.user_id,
+                }))
+                setTopicMembers(topicMembersRes)
+
+                console.log('members', res.data.users)
+            } catch (err) {
+                console.log('can not get members')
+            }
+        }
+        members()
     }, [navigate, newTask])
 
     const SubmitHandler = async (e) => {
@@ -63,12 +95,12 @@ const AddNewTask = (props) => {
                 task_description: newTask[1],
                 due_date: newTask[2],
                 board_id: newTask[3],
-                assignee_id: newTask[4],
+                assignee_id: newTask[4].code,
                 label: newTask[5],
                 position: newTask[6],
             }
             const res = await TaskApi.create(newtask)
-
+            console.log('new task', res)
             // const newData = [...newtask]
             props.onFinis({ ...res.data.data })
             setLoading(false)
@@ -85,24 +117,21 @@ const AddNewTask = (props) => {
             props.onVisble()
         } catch (err) {
             setLoading(false)
+            console.log(err.data)
             const show = () => {
                 toast.current.show({
                     severity: 'warn',
                     summary: 'Warning',
-                    detail: `${err ? err.data.error : 'Something went wrong'}`,
+                    detail: `${
+                        err ? err.data.message : 'Something went wrong'
+                    }`,
                     life: 4000,
                 })
             }
             show()
         }
     }
-    const cities = [
-        { name: 'New York', code: 'NY' },
-        { name: 'Rome', code: 'RM' },
-        { name: 'London', code: 'LDN' },
-        { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' },
-    ]
+
     return (
         <>
             <Toast ref={toast} />
@@ -136,34 +165,27 @@ const AddNewTask = (props) => {
                     />
 
                     <span className=" grow w-full p-float-label">
-                        <InputTextarea
-                            className="grow w-full"
-                            name="topicdescription"
-                            type="text"
-                            label="topic description"
-                            htmlFor="topicdescription"
-                            id="email"
-                            aria="topicdescription-help"
+                        <p className="text-[13px] pl-3 mb-1 text-[#7a7493]">
+                            Description
+                        </p>
+                        <Editor
                             value={newTask[1]}
-                            onChange={(e) =>
+                            onTextChange={(e) =>
                                 setnewTask((prevState) => [
                                     prevState[0],
-                                    e.target.value,
+                                    e.htmlValue,
                                     ...prevState.slice(2),
                                 ])
                             }
-                            rows={5}
-                            cols={30}
-                        />{' '}
-                        <label htmlFor="topicdescription">
-                            topic description
-                        </label>
+                            headerTemplate={header}
+                            style={{ height: '320px' }}
+                        />
                     </span>
                     <Input
                         name="duedate"
                         type="date"
                         label="Due Date"
-                        Htmlfor="duedate"
+                        htmlfor="duedate"
                         id="duedate"
                         aria-describedby="duedate-help"
                         value={newTask[2]}
@@ -185,9 +207,9 @@ const AddNewTask = (props) => {
                     <span className="p-float-label">
                         <Dropdown
                             name="Assignee"
-                            type="number"
+                            type="text"
                             label="Assign this task to"
-                            Htmlfor="Assignee"
+                            htmlFor="Assignee"
                             id="Assignee"
                             aria-describedby="Assignee-help"
                             value={newTask[4]}
@@ -202,13 +224,13 @@ const AddNewTask = (props) => {
                                     prevState[6],
                                 ])
                             }
-                            options={cities}
+                            options={topicMembers}
                             optionLabel="name"
                             // editable
                             placeholder="Select a member"
                             className="w-full md:w-14rem"
                         />{' '}
-                        <label htmlFor="Assignee">Select a Member</label>
+                        <label htmlFor="Assignee">Assign this task to</label>
                     </span>
 
                     <Button

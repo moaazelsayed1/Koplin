@@ -14,6 +14,7 @@ import { Toast } from 'primereact/toast'
 import { ConfirmPopup } from 'primereact/confirmpopup' // To use <ConfirmPopup> tag
 import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup method
 import AddNewBoard from './modals/AddNewBoard'
+import UserApi from '../../api/userApi'
 
 const SideBar = () => {
     const { boardId } = useParams()
@@ -52,14 +53,22 @@ const SideBar = () => {
     // Getting Topics and Boards
     useEffect(() => {
         const getTopics = async () => {
-            try {
-                const res = await TopicApi.getAll()
-                const finres = res.data.data.sort(
-                    (a, b) => a.topic_id - b.topic_id
-                )
-                dispatch(setTopics(finres))
-            } catch (error) {
-                alert('dsad', error)
+            let retries = 3
+            let success = false
+            while (retries > 0 && !success) {
+                try {
+                    const res = await TopicApi.getAll()
+                    console.log('topics', res)
+                    const finres = res.data.topics
+                        .filter((topic) => topic !== null)
+                        .sort((a, b) => a.topic_id - b.topic_id)
+                    dispatch(setTopics(finres))
+                    console.log('its worknigigigigigi')
+                    success = true
+                } catch (error) {
+                    retries--
+                    alert(error)
+                }
             }
         }
 
@@ -71,9 +80,7 @@ const SideBar = () => {
                 )
                 dispatch(setBoards(boardsres))
                 console.log(boardsres)
-            } catch (error) {
-                alert('board err', error)
-            }
+            } catch (error) {}
         }
 
         getTopics()
@@ -138,6 +145,13 @@ const SideBar = () => {
 
     const logOut = async () => {
         //WIP
+        try {
+            const res = await UserApi.LogOut()
+
+            navigate('/login')
+        } catch (error) {
+            console.log(error)
+        }
         console.log('logout')
     }
     const [editTpicId, setEditTpicId] = useState('')
