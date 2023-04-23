@@ -46,7 +46,7 @@ router.get('/:id', userController.getUserById)
 
 router.post(
   '/',
-  userController.checkPhoto,
+  /* userController.checkPhoto, */
   userController.uploadUserPhotoToCloudinary,
   userController.createUser
 )
