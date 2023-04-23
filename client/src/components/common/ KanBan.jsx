@@ -223,7 +223,7 @@ const KanBan = (props) => {
                 key={newTaskLabel + boardId}
             />
             <div className="py-5 px-6 flex flex-row items-center justify-between bg-slate-50 border-b">
-                <div className="flex flex-row">
+                <div className="flex flex-row items-center">
                     {!editing ? (
                         <>
                             <p className="text-2xl font-semibold text-stone-900 mr-3">
@@ -370,7 +370,7 @@ const KanBan = (props) => {
                                                                             .querySelector(
                                                                                 'p'
                                                                             )
-                                                                            ?.textContent
+                                                                            ?.innerText
                                                                     }
                                                                 </p>
                                                                 <div className="flex flex-row items-center justify-between">

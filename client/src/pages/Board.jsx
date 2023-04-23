@@ -29,9 +29,7 @@ const Board = () => {
             try {
                 const res2 = await BoardApi.getTasks(boardId)
                 setLists(res2.data.tasks)
-            } catch (error) {
-                alert(error)
-            }
+            } catch (error) {}
         }
         getBoard()
         getTasks()
