@@ -58,7 +58,6 @@ const AddNewTask = (props) => {
         Label,
         '7',
     ])
-    console.log('new task', newTask)
     useEffect(() => {
         setLabel(props.labelId)
         const members = async () => {
@@ -69,11 +68,7 @@ const AddNewTask = (props) => {
                     code: user.user_id,
                 }))
                 setTopicMembers(topicMembersRes)
-
-                console.log('members', res.data.users)
-            } catch (err) {
-                console.log('can not get members')
-            }
+            } catch (err) {}
         }
         members()
     }, [navigate, newTask])
@@ -100,7 +95,6 @@ const AddNewTask = (props) => {
                 position: newTask[6],
             }
             const res = await TaskApi.create(newtask)
-            console.log('new task', res)
             // const newData = [...newtask]
             props.onFinis({ ...res.data.data })
             setLoading(false)
@@ -117,7 +111,6 @@ const AddNewTask = (props) => {
             props.onVisble()
         } catch (err) {
             setLoading(false)
-            console.log(err.data)
             const show = () => {
                 toast.current.show({
                     severity: 'warn',

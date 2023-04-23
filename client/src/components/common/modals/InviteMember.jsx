@@ -22,25 +22,20 @@ const InviteMember = (props) => {
         e.preventDefault()
 
         setLoading(true)
-        console.log('value', value)
         if (value.length === 0) {
-            console.log('value is empty')
             setValueError(true)
             setLoading(false)
             return
         }
-        console.log('value', value)
 
         const inviteUser = (value) => {
             value.forEach(async (item) => {
                 try {
                     const res = await UserApi.getOne(item)
                     const thisUser = res
-                    console.log('this user zzzzz', thisUser)
-                    console.log('this user', thisUser.results)
                     if (thisUser.results === 0) {
-                        console.log('not a user!!')
                         const suc = `${item} is not a user`
+                        setLoading(false)
                         const show = () => {
                             toast.current.show({
                                 severity: 'warn',
@@ -49,7 +44,6 @@ const InviteMember = (props) => {
                                 life: 3000,
                             })
                         }
-                        console.log('not a user')
                         show()
                         return
                     } else {
@@ -58,7 +52,6 @@ const InviteMember = (props) => {
                                 props.topicId,
                                 thisUser.data.data[0].user_id
                             )
-                            console.log('added', res)
                         } catch (err) {}
                     }
                     setLoading(false)

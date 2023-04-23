@@ -45,11 +45,8 @@ const TopicEdit = (props) => {
                 topic_title,
                 topic_description,
             })
-            console.log('id', props.id)
             setLoading(false)
-            console.log(res)
             props.onFinis(props.id, topic_title, topic_description)
-            console.log('success')
             setTopicName('')
             setTopicDesciption('')
             const suc = 'Topic updated successfully'

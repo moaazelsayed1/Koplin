@@ -28,7 +28,6 @@ const TaskOverlay = (props) => {
     const [assignee, setAssignee] = useState('')
     const [due, setDue] = useState('')
     useEffect(() => {
-        console.log('props.task', props.task)
         setTask(props.task)
         setTitle(props.task.task_title)
         setDescription(props.task.task_description)
@@ -43,10 +42,8 @@ const TaskOverlay = (props) => {
         )
         setDue(formattedDate)
     }, [props.task])
-    console.log('task', task)
 
     const SubmitHandler = async () => {
-        console.log('blur srartr')
         try {
             const res = await TaskApi.updateTask(task.task_id, {
                 position: `${task.position}`,
@@ -59,10 +56,7 @@ const TaskOverlay = (props) => {
             })
 
             props.onFinis(task.task_id, res.data.data)
-            console.log('rezzzzzzs', res.data.data)
-        } catch (err) {
-            console.log('dont do', err)
-        }
+        } catch (err) {}
     }
 
     const onHide = () => {
@@ -81,7 +75,6 @@ const TaskOverlay = (props) => {
             props.onDelete(props.task.task_id)
             props.onHide()
             res = TaskApi.delete(props.task.task_id)
-            console.log('res', res)
         } catch {}
     }
 

@@ -27,7 +27,6 @@ const AddNewBoard = (props) => {
 
     const topicNameHandler = (e) => {
         setNewBoardName(e.target.value)
-        console.log(TopicId)
     }
     const topicdescriptionHandler = (e) => {
         setNewBoardDesciption(e.target.value)
@@ -52,7 +51,6 @@ const AddNewBoard = (props) => {
                 board_description,
                 topic_id,
             })
-            console.log('new boarddddd', res)
             setLoading(false)
             setNewBoardName('')
             setNewBoardDesciption('')

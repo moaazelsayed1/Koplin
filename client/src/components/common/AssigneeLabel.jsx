@@ -7,12 +7,10 @@ import { setCashs } from '../../redux/features/cashSlice'
 
 const AssigneeLabel = (props) => {
     const navigate = useNavigate()
-    console.log('assignee', props.id)
     const [user, setuser] = useState('')
     const [Datew, setDate] = useState('')
     const userx = useSelector((state) => state.cash)
     const dsds = userx.value
-    console.log('userx', userx)
     const dispatch = useDispatch()
     useEffect(() => {
         const formattedDate = new Date(props.due).toLocaleDateString('en-US', {
@@ -35,9 +33,7 @@ const AssigneeLabel = (props) => {
                     const name = res.data.data.username
                     setuser(name)
                     dispatch(setCashs([...dsds, { id: props.id, name }]))
-                } catch (err) {
-                    console.log(err)
-                }
+                } catch (err) {}
             }
         }
 

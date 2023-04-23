@@ -18,7 +18,6 @@ import UserApi from '../../api/userApi'
 
 const SideBar = () => {
     const { boardId } = useParams()
-    console.log('balrdid', boardId)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.value)
@@ -26,9 +25,7 @@ const SideBar = () => {
     const boards = useSelector((state) => state.board.value)
 
     const [nodes, setNodes] = useState([])
-    console.log('nodes', nodes)
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
-    console.log(selectedKey)
     const [expandedKeys, setExpandedKeys] = useState({})
 
     useEffect(() => {
@@ -58,12 +55,10 @@ const SideBar = () => {
             while (retries > 0 && !success) {
                 try {
                     const res = await TopicApi.getAll()
-                    console.log('topics', res)
                     const finres = res.data.topics
                         .filter((topic) => topic !== null)
                         .sort((a, b) => a.topic_id - b.topic_id)
                     dispatch(setTopics(finres))
-                    console.log('its worknigigigigigi')
                     success = true
                 } catch (error) {
                     retries--
@@ -79,7 +74,6 @@ const SideBar = () => {
                     (a, b) => a.board_id - b.board_id
                 )
                 dispatch(setBoards(boardsres))
-                console.log(boardsres)
             } catch (error) {}
         }
 
@@ -112,7 +106,6 @@ const SideBar = () => {
                     }
                 })
             } finally {
-                console.log(mappedNodes)
                 setNodes(mappedNodes)
             }
         }
@@ -147,12 +140,9 @@ const SideBar = () => {
         //WIP
         try {
             const res = await UserApi.LogOut()
-
+            localStorage.removeItem('token')
             navigate('/login')
-        } catch (error) {
-            console.log(error)
-        }
-        console.log('logout')
+        } catch (error) {}
     }
     const [editTpicId, setEditTpicId] = useState('')
     const [EditTopicName, setEditTopicName] = useState('')
@@ -168,7 +158,6 @@ const SideBar = () => {
     const EditTheTopic = (id, title) => {
         setNodes((prevData) => {
             const index = prevData.findIndex((topic) => topic.key === id)
-            console.log('here1', index)
             if (index !== -1) {
                 const updatedTopic = { ...prevData[index], label: title }
                 const newData = [...prevData]
@@ -178,22 +167,17 @@ const SideBar = () => {
                 return prevData
             }
         })
-        console.log('here2', nodes)
     }
 
     // Delete Topic
     const [deleteTopicId, setDeleteTopicId] = useState('')
-    console.log('deleteTopicId', deleteTopicId)
 
     const toast = useRef(null)
 
     const confirm2 = (event, key) => {
-        console.log('key', key)
         const accept = async () => {
             try {
-                console.log('key start', key)
                 const res = await TopicApi.deleteTopic(key)
-                console.log(res)
                 const deleteTopicFe = (topicId) => {
                     setNodes((prevData) => {
                         const newData = prevData.filter(
@@ -299,7 +283,6 @@ const SideBar = () => {
 
             if (parentNodeIndex === -1) {
                 // parent not found, return original state
-                console.log('parent not found')
                 return nodes
             }
 
@@ -313,7 +296,6 @@ const SideBar = () => {
             // create a new array of nodes with the updated parent node
             const newNodes = [...nodes]
             newNodes[parentNodeIndex] = newParentNode
-            console.log('parent found', newNodes)
 
             // return the updated nodes state
             return newNodes

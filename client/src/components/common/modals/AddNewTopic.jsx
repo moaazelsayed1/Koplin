@@ -48,8 +48,6 @@ const AddNewTopic = (props) => {
             })
             setLoading(false)
             props.onFinis(res.data.data)
-            console.log('bbb')
-            // console.log('newtopic', res.data.data)
 
             setNewBoardName('')
             setNewBoardDesciption('')

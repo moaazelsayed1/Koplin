@@ -24,7 +24,6 @@ const KanBan = (props) => {
     const navigate = useNavigate()
     const menu = useRef(null)
     const [data, setData] = useState('')
-    console.log('data', data)
     const [boardId, setboardId] = useState('')
 
     const [editing, setediting] = useState(false)
@@ -82,7 +81,6 @@ const KanBan = (props) => {
         },
     ]
 
-    console.log('inviteMemberModal', inviteMemberModal)
     const parser = new DOMParser()
 
     useEffect(() => {
@@ -172,7 +170,6 @@ const KanBan = (props) => {
         })
     }
 
-    console.log('newBoardName', newBoardName)
     const updateBoardName = async () => {
         try {
             const res = await BoardApi.Update(boardId, {
@@ -181,13 +178,10 @@ const KanBan = (props) => {
                 topicId: props.topicId,
             })
             setediting(false)
-        } catch (err) {
-            console.log(err)
-        }
+        } catch (err) {}
     }
     const [taskShown, settaskShown] = useState({})
     const overlayTaskHandler = (task) => {
-        console.log('task', task)
         settaskShown(task)
         setVisibleRight(true)
     }
@@ -199,7 +193,6 @@ const KanBan = (props) => {
             newData[taskIndex] = updatedTask
             setData(newData)
         }
-        console.log('tasks', data)
     }
 
     const onDeleteTaskHandler = (id) => {
