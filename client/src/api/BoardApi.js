@@ -6,6 +6,7 @@ const BoardApi = {
     getTasks: (id) => axiosClient.get(`tasks/board/${id}`),
     create: (params) => axiosClient.post('boards', params),
     Update: (id, params) => axiosClient.put(`boards/${id}`, params),
+    delete: (id) => axiosClient.delete(`boards/${id}`),
 }
 
 export default BoardApi

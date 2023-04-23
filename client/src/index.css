@@ -105,3 +105,18 @@ button,
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Menu */
+
+.p-menu {
+    background: #ec4a0a;
+}
+
+.p-inputtext {
+    width: 100%;
+}
+
+.p-sidebar-right .p-sidebar {
+    width: 50%;
+    height: 100%;
+}
