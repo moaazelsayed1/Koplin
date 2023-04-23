@@ -1,9 +1,17 @@
 'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
+'use strict'
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Add foreign key constraint for Task_Comments table
+    // Remove the foreign key constraint if it exists
+    await queryInterface.removeConstraint(
+      'Task_Comments',
+      'Task_Comments_task_id_fkey'
+    )
+
+    // Add the foreign key constraint
     await queryInterface.addConstraint('Task_Comments', {
       fields: ['task_id'],
       type: 'foreign key',
@@ -16,7 +24,8 @@ module.exports = {
       onUpdate: 'CASCADE',
     })
 
-    // Add foreign key constraint for Tasks table
+    // Add the foreign key constraint for tasks
+    await queryInterface.removeConstraint('Tasks', 'Tasks_board_id_fkey')
     await queryInterface.addConstraint('Tasks', {
       fields: ['board_id'],
       type: 'foreign key',
@@ -29,7 +38,9 @@ module.exports = {
       onUpdate: 'CASCADE',
     })
 
-    // Add foreign key constraint for Boards table
+    // Add the foreign key constraint for boards
+    await queryInterface.removeConstraint('Boards', 'Boards_topic_id_fkey')
+
     await queryInterface.addConstraint('Boards', {
       fields: ['topic_id'],
       type: 'foreign key',
@@ -44,16 +55,12 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Remove foreign key constraint for Task_Comments table
+    // Remove the foreign key constraints in reverse order
+    await queryInterface.removeConstraint('Boards', 'Boards_topic_id_fkey')
+    await queryInterface.removeConstraint('Tasks', 'Tasks_board_id_fkey')
     await queryInterface.removeConstraint(
       'Task_Comments',
       'Task_Comments_task_id_fkey'
     )
-
-    // Remove foreign key constraint for Tasks table
-    await queryInterface.removeConstraint('Tasks', 'Tasks_board_id_fkey')
-
-    // Remove foreign key constraint for Boards table
-    await queryInterface.removeConstraint('Boards', 'Boards_topic_id_fkey')
   },
 }
