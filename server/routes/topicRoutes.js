@@ -15,23 +15,34 @@ const authController = require(path.join(
 
 const router = express.Router()
 
-router.get('/:topicId/user/:userId', topicController.addUserToTopic)
+// unused
+/* router.get('/', topicController.getAllTopics) */
 
-router.get('/myTopics', authController.protect, topicController.getTopicsByUser)
+// unused
+/* router.get('/:id', topicController.getTopicById) */
 
-router.get('/', topicController.getAllTopics)
+router.use(authController.protect)
 
-router.get('/:id', topicController.getTopicById)
+router.post('/', topicController.setCreator, topicController.createTopic)
 
-router.post(
-  '/',
-  authController.protect,
-  topicController.setCreator,
-  topicController.createTopic
+router.get('/myTopics', topicController.getTopicsByUser)
+
+router.get(
+  '/:topicId/user/:userId',
+  topicController.checkUserInTopic,
+  topicController.addUserToTopic
 )
 
-router.put('/:id', topicController.updateTopic)
+router.patch(
+  '/:id',
+  topicController.checkTopicOwner,
+  topicController.updateTopic
+)
 
-router.delete('/:id', topicController.deleteTopic)
+router.delete(
+  '/:id',
+  topicController.checkTopicOwner,
+  topicController.deleteTopic
+)
 
 module.exports = router

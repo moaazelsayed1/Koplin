@@ -19,6 +19,7 @@ exports.addUserToTopic = catchAsync(async (req, res) => {
 })
 
 exports.getTopicsByUser = catchAsync(async (req, res) => {
+  console.log(req.user)
   const userId = req.user.user_id
 
   const topicUsers = await Topic_User.findAll({
@@ -41,6 +42,47 @@ exports.setCreator = (req, res, next) => {
   req.body.created_by = req.user.user_id
   next()
 }
+
+exports.checkUserInTopic = catchAsync(async (req, res, next) => {
+  const topicId = req.params.topicId
+  const userId = req.user.user_id
+
+  const topicUser = await Topic_User.findOne({
+    where: {
+      topic_id: topicId,
+      user_id: userId,
+    },
+  })
+
+  if (!topicUser) {
+    return res.status(401).json({
+      status: 'fail',
+      message: 'User is not authorized to access this topic',
+    })
+  }
+
+  next()
+})
+
+exports.checkTopicOwner = catchAsync(async (req, res, next) => {
+  const topic = await Topic.findByPk(req.params.id)
+
+  if (!topic) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Topic not found',
+    })
+  }
+
+  if (topic.created_by !== req.user.user_id) {
+    return res.status(403).json({
+      status: 'fail',
+      message: 'You are not authorized to perform this action',
+    })
+  }
+
+  next()
+})
 
 exports.getAllTopics = Factory.getAll(Topic)
 
