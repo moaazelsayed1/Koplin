@@ -19,6 +19,7 @@ router.post(
   userController.uploadUserPhotoToCloudinary,
   authController.signup
 )
+
 router.post('/login', authController.login)
 router.get('/logout', authController.logout)
 
@@ -45,19 +46,32 @@ router.patch(
   userController.uploadUserPhotoToCloudinary,
   userController.updateMe
 )
-router.get('/topics/:id/users', userController.getUsersByTopic)
-router.get('/', userController.getAllUsers)
-router.get('/:id', userController.getUserById)
 
-router.post(
-  '/',
-  userController.checkPhoto,
-  userController.uploadUserPhotoToCloudinary,
-  userController.createUser
+router.get(
+  '/topics/:id/users',
+  authController.protect,
+  userController.getUsersByTopic
 )
 
-router.patch('/:id', userController.updateUser)
+router.get('/:username', userController.getUserByUsername)
 
-router.delete('/:id', userController.deleteUser)
+// unused
+router.get('/', userController.getAllUsers)
+// unused
+/* router.get('/:id', userController.getUserById) */
+
+// unsed
+/* router.post( */
+/*   '/', */
+/*   userController.checkPhoto, */
+/*   userController.uploadUserPhotoToCloudinary, */
+/*   userController.createUser */
+/* ) */
+
+// unsed
+/* router.patch('/:id', userController.updateUser) */
+
+// unused
+/* router.delete('/:id', userController.deleteUser) */
 
 module.exports = router

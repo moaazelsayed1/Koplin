@@ -13,6 +13,7 @@ const { upload, dataUri } = require(path.join(
 ))
 
 const sharp = require('sharp')
+const { fail } = require('assert')
 
 const generateDefaultUserPhoto = catchAsync(async (req, res, next) => {
   const canvas = createCanvas(200, 200)
@@ -97,7 +98,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   })
 })
 
-// log in
 exports.getUsersByTopic = catchAsync(async (req, res, next) => {
   const topicId = req.params.id
 
@@ -116,6 +116,26 @@ exports.checkPhoto = (req, res, next) => {
     return generateDefaultUserPhoto(req, res, next)
   }
 }
+
+exports.getUserByUsername = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({
+    where: {
+      username: req.params.username,
+    },
+  })
+
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User not found',
+    })
+  }
+
+  res.status(200).json({
+    status: 'success',
+    user,
+  })
+})
 
 exports.getAllUsers = Factory.getAll(User)
 
