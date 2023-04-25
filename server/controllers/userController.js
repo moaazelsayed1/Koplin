@@ -18,20 +18,23 @@ const generateDefaultUserPhoto = catchAsync(async (req, res, next) => {
   const canvas = createCanvas(200, 200)
   const ctx = canvas.getContext('2d')
 
-  ctx.fillStyle = '#f2f2f2'
+  const r = Math.floor(Math.random() * 255)
+  const g = Math.floor(Math.random() * 255)
+  const b = Math.floor(Math.random() * 255)
+
+  ctx.fillStyle = `rgb(${r},${g},${b})`
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   ctx.font = '100px Arial'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.fillStyle = '#000'
+  ctx.fillStyle = '#fff'
 
   const initial = req.body.username.charAt(0).toUpperCase()
   ctx.fillText(initial, canvas.width / 2, canvas.height / 2)
 
   const buffer = canvas.toBuffer()
   req.photo = buffer.toString('base64')
-  console.log(req)
 
   next()
 })
@@ -94,6 +97,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   })
 })
 
+// log in
 exports.getUsersByTopic = catchAsync(async (req, res, next) => {
   const topicId = req.params.id
 
