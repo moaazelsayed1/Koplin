@@ -120,3 +120,12 @@ button,
     width: 50%;
     height: 100%;
 }
+
+.task-title {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    max-width: 18rem;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

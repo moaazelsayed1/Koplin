@@ -1,12 +1,14 @@
 // REACT
 import React, { useEffect, useState, useRef } from 'react'
+import { setCashs } from '../../redux/features/cashSlice'
+import { useSelector, useDispatch } from 'react-redux'
+
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { Tooltip } from 'primereact/tooltip'
 import { Menu } from 'primereact/menu'
 import { ConfirmDialog } from 'primereact/confirmdialog' // For <ConfirmDialog /> component
 import { confirmDialog } from 'primereact/confirmdialog' // For confirmDialog method
-import { Sidebar } from 'primereact/sidebar'
 
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -19,9 +21,12 @@ import BoardApi from '../../api/BoardApi'
 import InviteMember from './modals/InviteMember'
 import AssigneeLabel from './AssigneeLabel'
 import TaskOverlay from './modals/TaskOverlay'
+import TopicApi from '../../api/TopicApi'
 
 const KanBan = (props) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const menu = useRef(null)
     const [data, setData] = useState('')
     const [boardId, setboardId] = useState('')
@@ -31,7 +36,6 @@ const KanBan = (props) => {
 
     const [inviteMemberModal, setInviteMemberModal] = useState(false)
     const [visibleRight, setVisibleRight] = useState(false)
-
     const deletetheboard = (event) => {
         const accept = async () => {
             try {
@@ -87,6 +91,20 @@ const KanBan = (props) => {
         setData(props.data)
         setboardId(props.boardId)
         setnewBoardName(props.title)
+
+        const getUsers = async () => {
+            try {
+                const res = await TopicApi.getAllusers(props.topicId)
+                const newObjects = res.data.users.map((obj) => ({
+                    id: obj.user_id,
+                    name: obj.username,
+                }))
+                dispatch(setCashs([...newObjects]))
+            } catch (err) {}
+        }
+        if (props.topicId) {
+            getUsers()
+        }
     }, [props.data, navigate])
 
     // Drag and drop position changer functions
@@ -108,6 +126,7 @@ const KanBan = (props) => {
     }
 
     const onDragEnd = async ({ source, destination }) => {
+        setVisibleRight(false)
         if (!destination) return
         const sourceColIndex = source.droppableId
 
@@ -344,7 +363,7 @@ const KanBan = (props) => {
                                                                         task
                                                                     )
                                                                 }
-                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
+                                                                className={` max-w-sm px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
                                                                         : 'cursor-pointer'
@@ -355,7 +374,7 @@ const KanBan = (props) => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                             >
-                                                                <h2 className=" text-base font-medium text-neutral-900">
+                                                                <h2 className=" task-title text-base font-medium text-neutral-900">
                                                                     {
                                                                         task.task_title
                                                                     }
@@ -381,8 +400,10 @@ const KanBan = (props) => {
                                                                         due={
                                                                             task.due_date
                                                                         }
+                                                                        key={
+                                                                            task.due_date
+                                                                        }
                                                                     />
-                                                                    <p>pz</p>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -440,7 +461,7 @@ const KanBan = (props) => {
                                                                         task
                                                                     )
                                                                 }
-                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
+                                                                className={` max-w-sm px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
                                                                         : 'cursor-pointer'
@@ -451,7 +472,7 @@ const KanBan = (props) => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                             >
-                                                                <h2 className=" text-base font-medium text-neutral-900">
+                                                                <h2 className="task-title text-base font-medium text-neutral-900">
                                                                     {
                                                                         task.task_title
                                                                     }
@@ -477,8 +498,10 @@ const KanBan = (props) => {
                                                                         due={
                                                                             task.due_date
                                                                         }
+                                                                        key={
+                                                                            task.due_date
+                                                                        }
                                                                     />
-                                                                    <p>p</p>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -538,7 +561,7 @@ const KanBan = (props) => {
                                                                         task
                                                                     )
                                                                 }
-                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
+                                                                className={`max-w-sm px-4 py-3 mb-3 shadow-card bg-white rounded-lg ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
                                                                         : 'cursor-pointer	'
@@ -549,7 +572,7 @@ const KanBan = (props) => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                             >
-                                                                <h2 className=" text-base font-medium text-neutral-900">
+                                                                <h2 className="task-title text-base font-medium text-neutral-900">
                                                                     {
                                                                         task.task_title
                                                                     }
@@ -575,8 +598,10 @@ const KanBan = (props) => {
                                                                         due={
                                                                             task.due_date
                                                                         }
+                                                                        key={
+                                                                            task.due_date
+                                                                        }
                                                                     />
-                                                                    <p>p</p>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -636,7 +661,7 @@ const KanBan = (props) => {
                                                                         task
                                                                     )
                                                                 }
-                                                                className={`px-4 py-3 mb-3 shadow-card bg-white rounded-lg  ${
+                                                                className={`max-w-sm px-4 py-3 mb-3 shadow-card bg-white rounded-lg  ${
                                                                     snapshot.isDragging
                                                                         ? 'cursor-grab'
                                                                         : 'cursor-pointer'
@@ -647,7 +672,7 @@ const KanBan = (props) => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                             >
-                                                                <h2 className=" text-base font-medium text-neutral-900">
+                                                                <h2 className="task-title text-base font-medium text-neutral-900">
                                                                     {
                                                                         task.task_title
                                                                     }
@@ -673,8 +698,10 @@ const KanBan = (props) => {
                                                                         due={
                                                                             task.due_date
                                                                         }
+                                                                        key={
+                                                                            task.due_date
+                                                                        }
                                                                     />
-                                                                    <p>p</p>
                                                                 </div>
                                                             </div>
                                                         )}

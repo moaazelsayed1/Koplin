@@ -70,7 +70,9 @@ const AddNewTask = (props) => {
                 setTopicMembers(topicMembersRes)
             } catch (err) {}
         }
-        members()
+        {
+            props.topicId && members()
+        }
     }, [navigate, newTask])
 
     const SubmitHandler = async (e) => {
@@ -95,7 +97,6 @@ const AddNewTask = (props) => {
                 position: newTask[6],
             }
             const res = await TaskApi.create(newtask)
-            // const newData = [...newtask]
             props.onFinis({ ...res.data.data })
             setLoading(false)
             const suc = 'Topic created successfully'

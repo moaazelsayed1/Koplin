@@ -22,6 +22,7 @@
         "react-dom": "^18.2.0",
         "react-redux": "^8.0.5",
         "react-router-dom": "^6.10.0",
+        "sanitize-html": "^2.10.0",
         "universal-cookie": "^4.0.4"
     },
     "devDependencies": {

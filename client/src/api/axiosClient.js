@@ -20,7 +20,7 @@ axiosClient.interceptors.request.use(async (config) => {
         ...config,
         headers: {
             'content-type': 'application/json',
-            Authorization: `Bearer ${getToken()}`,
+            // Authorization: `Bearer ${getToken()}`,
         },
     }
 })

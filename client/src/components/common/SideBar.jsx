@@ -15,7 +15,7 @@ import { ConfirmPopup } from 'primereact/confirmpopup' // To use <ConfirmPopup> 
 import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup method
 import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
-
+import { setUser } from '../../redux/features/userSlice'
 const SideBar = () => {
     const { boardId } = useParams()
     const navigate = useNavigate()
@@ -139,7 +139,6 @@ const SideBar = () => {
         //WIP
         try {
             const res = await UserApi.LogOut()
-            console.log(res)
             dispatch(setUser(null))
             localStorage.removeItem('token')
             navigate('/login')

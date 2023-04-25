@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from 'primereact/sidebar'
 import { InputText } from 'primereact/inputtext'
 import { Editor } from 'primereact/editor'
+import { Calendar } from 'primereact/calendar'
+
 import TaskApi from '../../../api/TaskApi'
 
 const TaskOverlay = (props) => {
@@ -27,20 +29,25 @@ const TaskOverlay = (props) => {
     const [description, setDescription] = useState('')
     const [assignee, setAssignee] = useState('')
     const [due, setDue] = useState('')
+
+    const [priority, setpriority] = useState('')
     useEffect(() => {
+        const targetDate = new Date(props.task.due_date) // Replace with your target date
+        const timeDiff = targetDate.getTime() - Date.now()
+        const daysDiff = timeDiff / (1000 * 3600 * 24) // Convert timeDiff to days
+
+        if (daysDiff <= 2) {
+            setpriority(1)
+        } else if (daysDiff <= 7) {
+            setpriority(2)
+        } else {
+            setpriority(3)
+        }
         setTask(props.task)
         setTitle(props.task.task_title)
         setDescription(props.task.task_description)
         setAssignee(props.task.assignee)
-        const formattedDate = new Date(props.task.due_date).toLocaleDateString(
-            'en-US',
-            {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-            }
-        )
-        setDue(formattedDate)
+        setDue(props.task.due_date)
     }, [props.task])
 
     const SubmitHandler = async () => {
@@ -49,7 +56,7 @@ const TaskOverlay = (props) => {
                 position: `${task.position}`,
                 task_title: `${title}`,
                 task_description: `${description}`,
-                due_date: `${task.due_date}`,
+                due_date: `${due}`,
                 label: `${task.label}`,
                 board_id: `${task.board_id}`,
                 assignee_id: `${task.assignee_id}`,
@@ -95,6 +102,26 @@ const TaskOverlay = (props) => {
                         onChange={(e) => setTitle(e.target.value)}
                         onBlur={SubmitHandler}
                     />
+                    <div className="pl-4 flex flex-row items-center pb-8">
+                        <p className=" text-slate-600 text-base font-medium mr-3">
+                            Priority :
+                        </p>
+                        {priority === 3 && (
+                            <p className="text-lime-700 max-w-fit text-sm font-normal py-1 px-2 rounded-md bg-lime-200 ">
+                                low
+                            </p>
+                        )}
+                        {priority === 2 && (
+                            <p className="text-orange-700 max-w-fit text-sm font-normal py-1 px-2 rounded-md bg-orange-200 ">
+                                Medium
+                            </p>
+                        )}
+                        {priority === 1 && (
+                            <p className=" text-red-700 max-w-fit text-sm font-normal py-1 px-2 rounded-md bg-red-200 ">
+                                High
+                            </p>
+                        )}
+                    </div>
                     <Editor
                         value={description}
                         onTextChange={(e) => setDescription(e.htmlValue)}
@@ -102,8 +129,23 @@ const TaskOverlay = (props) => {
                         style={{ height: '320px' }}
                         onBlur={SubmitHandler}
                     />
+                    <div className="flex mt-6 items-center">
+                        <p className=" w-28 text-zinc-600">Due date: </p>
+                        <InputText
+                            className="transition-all text-xl py-2 border-1 border-white hover:border focus:border "
+                            value={
+                                due
+                                    ? new Date(due).toISOString().slice(0, 10)
+                                    : ''
+                            }
+                            type="date"
+                            placeholder={due}
+                            onChange={(e) => setDue(e.target.value)}
+                            onBlur={SubmitHandler}
+                        />
+                    </div>
                 </div>
-                <div>
+                <div className="flex flex-row justify-between items-center">
                     <i
                         onClick={deleteTheTask}
                         className="pi pi-trash
