@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const path = require('path')
+const { promisify } = require('util')
 
 const appError = require(path.join('..', 'utils', 'appError'))
 const catchAsync = require(path.join('..', 'utils', 'catchAsync'))
@@ -57,6 +58,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    photo: req.body.photo,
   })
 
   createAndSendToken(newUser, 201, res)
@@ -79,7 +81,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     )
   }
 
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  /* const decoded = await jwt.verify(token, process.env.JWT_SECRET) */
 
   const currentUser = await User.findByPk(decoded.id)
 

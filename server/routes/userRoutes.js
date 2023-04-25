@@ -13,7 +13,12 @@ const authController = require(path.join(
 
 const router = express.Router()
 
-router.post('/signup', authController.signup)
+router.post(
+  '/signup',
+  userController.checkPhoto,
+  userController.uploadUserPhotoToCloudinary,
+  authController.signup
+)
 router.post('/login', authController.login)
 router.get('/logout', authController.logout)
 
@@ -46,7 +51,7 @@ router.get('/:id', userController.getUserById)
 
 router.post(
   '/',
-  /* userController.checkPhoto, */
+  userController.checkPhoto,
   userController.uploadUserPhotoToCloudinary,
   userController.createUser
 )

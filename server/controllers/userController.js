@@ -4,6 +4,7 @@ const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
 const Factory = require(path.join(__dirname, 'handlerFactory'))
 const cloudinary = require(path.join(__dirname, '..', 'utils', 'cloudinary'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
+const { createCanvas, loadImage } = require('canvas')
 const { upload, dataUri } = require(path.join(
   __dirname,
   '..',
@@ -13,17 +14,28 @@ const { upload, dataUri } = require(path.join(
 
 const sharp = require('sharp')
 
-/* 
-if(req.file) {
-const file = dataUri(req).content;
-return uploader.upload(file).then((result) => {
-const image = result.url;
-return res.status(200).json({
-messge: 'Your image has been uploded successfully to cloudinary',
-data: {
-image
-}
-*/
+const generateDefaultUserPhoto = catchAsync(async (req, res, next) => {
+  const canvas = createCanvas(200, 200)
+  const ctx = canvas.getContext('2d')
+
+  ctx.fillStyle = '#f2f2f2'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+  ctx.font = '100px Arial'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillStyle = '#000'
+
+  const initial = req.body.username.charAt(0).toUpperCase()
+  ctx.fillText(initial, canvas.width / 2, canvas.height / 2)
+
+  const buffer = canvas.toBuffer()
+  req.photo = buffer.toString('base64')
+  console.log(req)
+
+  next()
+})
+
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.dataValues.user_id
   next()
@@ -44,10 +56,10 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 })
 
 exports.uploadUserPhotoToCloudinary = catchAsync(async (req, res, next) => {
-  if (!req.file) return next()
+  if (!req.file && !req.photo) return next()
 
   const file = dataUri(req).content
-  /* console.log(file) */
+
   const result = await cloudinary.uploader.upload(file)
 
   req.body.photo = result.secure_url
@@ -94,6 +106,12 @@ exports.getUsersByTopic = catchAsync(async (req, res, next) => {
 
   res.status(200).json({ status: 'success', data: { users } })
 })
+
+exports.checkPhoto = (req, res, next) => {
+  if (!req.photo) {
+    return generateDefaultUserPhoto(req, res, next)
+  }
+}
 
 exports.getAllUsers = Factory.getAll(User)
 

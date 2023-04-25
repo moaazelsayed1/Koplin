@@ -19,6 +19,14 @@ const upload = multer({
 
 const dUri = new Datauri()
 const dataUri = (req) => {
+  if (req.photo) {
+    const str = req.photo.toString('base64')
+
+    const buffer = Buffer.from(str, 'base64')
+    /* console.log(req.photo) */
+    return dUri.format('.jpeg', buffer)
+  }
+  /* console.log(req.file.buffer) */
   return dUri.format('.jpeg', req.file.buffer)
 }
 module.exports = { upload, dataUri }
