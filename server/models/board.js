@@ -3,6 +3,7 @@ const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 
 const Topic = require('./topic')
+const User = require('./user')
 
 const Board = sequelize.define('Board', {
   board_id: {
@@ -25,8 +26,13 @@ const Board = sequelize.define('Board', {
       key: 'topic_id',
     },
   },
+  created_by: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'user_id',
+    },
+  },
 })
-
-Board.belongsTo(Topic, { foreignKey: 'topic_id' })
 
 module.exports = Board
