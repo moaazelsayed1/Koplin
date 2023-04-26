@@ -3,6 +3,7 @@ const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 
 const Topic = require('./topic')
+const User = require('./user')
 
 const Board = sequelize.define('Board', {
   board_id: {
@@ -28,7 +29,20 @@ const Board = sequelize.define('Board', {
   created_by: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: User,
+      key: 'user_id',
+    },
   },
+})
+
+Board.afterCreate(async (board, options) => {
+  const Board_User = require('./boardUser')
+  console.log('sdlfja')
+  await Board_User.create({
+    board_id: board.board_id,
+    user_id: board.created_by,
+  })
 })
 
 module.exports = Board

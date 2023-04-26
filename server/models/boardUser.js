@@ -5,15 +5,21 @@ const { DataTypes } = require('sequelize')
 const User = require('./user')
 const Board = require('./board')
 
-const Board_User = sequelize.define('Board_User', {
-  board_user_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const BoardUser = sequelize.define(
+  'board_user',
+  {
+    board_user_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
   },
-})
+  {
+    tableName: 'board_user',
+  }
+)
 
-Board_User.belongsTo(Board, { foreignKey: 'board_id' })
-Board_User.belongsTo(User, { foreignKey: 'user_id' })
+BoardUser.belongsTo(Board, { foreignKey: 'board_id' })
+BoardUser.belongsTo(User, { foreignKey: 'user_id' })
 
-module.exports = Board_User
+module.exports = BoardUser
