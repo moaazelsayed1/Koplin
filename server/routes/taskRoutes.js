@@ -7,20 +7,37 @@ const authController = require(path.join(
   'controllers',
   'authController'
 ))
+const topicUserController = require(path.join(
+  __dirname,
+  '..',
+  'controllers',
+  'topicUserController'
+))
 const router = express.Router()
 
-router.get('/board/:boardId', taskController.getTasksByBoard)
-
-router.get('/myTasks', authController.protect, taskController.getTasksByUser)
-
+// unused
 router.get('/', taskController.getAllTasks)
 
-router.get('/:id', taskController.getTaskById)
+// unused
+/* router.get('/:id', taskController.getTaskById) */
 
-router.post('/', taskController.createTask)
+router.use(authController.protect)
+router.get('/myTasks', taskController.getTasksByUser)
 
-router.put('/:id', taskController.updateTask)
+router.get(
+  '/topic/:topicId/board/:boardId',
+  topicUserController.setTopicUserId,
+  taskController.getTasksByBoard
+)
+router.post(
+  '/topic/:topicId/',
+  topicUserController.setTopicUserId,
+  taskController.createTask
+)
 
-router.delete('/:id', taskController.deleteTask)
+router
+  .route('/topic/:topicId/task/:id')
+  .patch(topicUserController.setTopicUserId, taskController.updateTask)
+  .delete(topicUserController.setTopicUserId, taskController.deleteTask)
 
 module.exports = router
