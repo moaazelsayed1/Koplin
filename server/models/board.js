@@ -26,13 +26,6 @@ const Board = sequelize.define('Board', {
       key: 'topic_id',
     },
   },
-  created_by: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'user_id',
-    },
-  },
 })
 
 module.exports = Board
