@@ -3,7 +3,6 @@ const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 
 const Topic = require('./topic')
-const topicUser = require('./topicUser')
 
 const Board = sequelize.define('Board', {
   board_id: {
@@ -26,12 +25,9 @@ const Board = sequelize.define('Board', {
       key: 'topic_id',
     },
   },
-  topic_user_id: {
+  created_by: {
     type: DataTypes.INTEGER,
-    references: {
-      model: topicUser,
-      key: 'topic_user_id',
-    },
+    allowNull: false,
   },
 })
 
