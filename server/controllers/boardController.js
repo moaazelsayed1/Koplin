@@ -5,6 +5,7 @@ const Topic = require(path.join(__dirname, '..', 'models', 'topic'))
 const AppError = require(path.join(__dirname, '..', 'utils', 'appError'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
 const BoardUser = require(path.join(__dirname, '..', 'models', 'boardUser'))
+const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
 
 exports.getAllBoardsByTopic = catchAsync(async (req, res, next) => {
   const { topicId } = req.params
@@ -47,8 +48,6 @@ exports.checkBoardCreator = catchAsync(async (req, res, next) => {
   const user_id = req.user.dataValues.user_id
   const board_id = req.params.id
 
-  console.log(user_id)
-  console.log(board_id)
   const creator = await Board.findOne({
     where: {
       created_by: user_id,
@@ -61,6 +60,41 @@ exports.checkBoardCreator = catchAsync(async (req, res, next) => {
   }
 
   next()
+})
+
+exports.addUserToBoard = catchAsync(async (req, res, next) => {
+  const user_id = req.user.dataValues.user_id
+  const board_id = req.params.id
+
+  const board = await Board.findOne({
+    where: {
+      board_id: board_id,
+    },
+  })
+
+  const topicUser = await TopicUser.findOne({
+    where: {
+      user_id: user_id,
+    },
+  })
+  if (!topicUser) {
+    await TopicUser.create({
+      user_id: user_id,
+      topic_id: board.topic_id,
+    })
+  }
+
+  const boardUser = await BoardUser.create({
+    user_id: user_id,
+    board_id: board_id,
+  })
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      boardUser,
+    },
+  })
 })
 
 exports.getAllBoards = Factory.getAll(Board)

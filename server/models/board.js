@@ -4,6 +4,7 @@ const { DataTypes } = require('sequelize')
 
 const Topic = require('./topic')
 const User = require('./user')
+const TopicUser = require('./topicUser')
 
 const Board = sequelize.define('Board', {
   board_id: {
@@ -38,11 +39,22 @@ const Board = sequelize.define('Board', {
 
 Board.afterCreate(async (board, options) => {
   const Board_User = require('./boardUser')
-  console.log('sdlfja')
   await Board_User.create({
     board_id: board.board_id,
     user_id: board.created_by,
   })
+
+  const topicUser = await TopicUser.findOne({
+    where: {
+      user_id: board.created_by,
+    },
+  })
+  if (!topicUser) {
+    await TopicUser.create({
+      user_id: board.created_by,
+      topic_id: board.topic_id,
+    })
+  }
 })
 
 module.exports = Board
