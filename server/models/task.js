@@ -1,7 +1,8 @@
 const path = require('path')
 const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
-const BoardUser = require('./boardUser')
+const User = require('./user')
+const Board = require('./board')
 
 const Task = sequelize.define('Task', {
   task_id: {
@@ -33,8 +34,17 @@ const Task = sequelize.define('Task', {
     allowNull: true,
     default: 'To Do',
   },
+  created_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    refernces: {
+      model: 'User',
+      key: 'user_id',
+    },
+  },
 })
 
-Task.belongsTo(BoardUser, { foreignKey: 'board_user_id' })
+Task.belongsTo(Board, { foreignKey: 'board_id' })
+Task.belongsTo(User, { foreignKey: 'assignee_id' })
 
 module.exports = Task
