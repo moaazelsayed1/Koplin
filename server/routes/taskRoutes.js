@@ -7,12 +7,14 @@ const authController = require(path.join(
   'controllers',
   'authController'
 ))
-/* const topicUserController = require(path.join( */
-/*   __dirname, */
-/*   '..', */
-/*   'controllers', */
-/*   'topicUserController' */
-/* )) */
+
+const boardController = require(path.join(
+  __dirname,
+  '..',
+  'controllers',
+  'boardController'
+))
+
 const router = express.Router()
 
 // unused
@@ -27,10 +29,18 @@ router.get('/myTasks', taskController.getTasksByUser)
 router.get('/board/:boardId', taskController.getTasksByBoard)
 
 router.post('/', taskController.setBoardId, taskController.createTask)
-/**/
-/* router */
-/*   .route('/topic/:topicId/task/:id') */
-/*   .patch(topicUserController.setTopicUserId, taskController.updateTask) */
-/*   .delete(topicUserController.setTopicUserId, taskController.deleteTask) */
+
+router
+  .route('/board/:id/task/:taskId')
+  .patch(
+    boardController.checkUserInBoard,
+    taskController.setTaskId,
+    taskController.updateTask
+  )
+  .delete(
+    boardController.checkUserInBoard,
+    taskController.setTaskId,
+    taskController.deleteTask
+  )
 
 module.exports = router
