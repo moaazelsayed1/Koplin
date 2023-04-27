@@ -34,6 +34,14 @@ const Task = sequelize.define('Task', {
     allowNull: true,
     default: 'To Do',
   },
+  created_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    refernces: {
+      model: 'User',
+      key: 'user_id',
+    },
+  },
 })
 
 Task.belongsTo(Board, { foreignKey: 'board_id' })

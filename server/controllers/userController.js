@@ -1,9 +1,11 @@
 const path = require('path')
 const User = require(path.join(__dirname, '..', 'models', 'user'))
-const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
+/* const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser')) */
 const Factory = require(path.join(__dirname, 'handlerFactory'))
 const cloudinary = require(path.join(__dirname, '..', 'utils', 'cloudinary'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
+const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
+const BoardUser = require(path.join(__dirname, '..', 'models', 'boardUser'))
 const { createCanvas, loadImage } = require('canvas')
 const { upload, dataUri } = require(path.join(
   __dirname,
@@ -107,6 +109,20 @@ exports.getUsersByTopic = catchAsync(async (req, res, next) => {
   })
 
   const users = topicUsers.map((topicUser) => topicUser.User)
+
+  res.status(200).json({ status: 'success', data: { users } })
+})
+
+exports.getUsersByBoard = catchAsync(async (req, res, next) => {
+  const boardId = req.params.id
+  const boardUser = await BoardUser.findAll({
+    where: {
+      board_id: boardId,
+    },
+    include: [{ model: User }],
+  })
+
+  const users = boardUser.map((boardUser) => boardUser.User)
 
   res.status(200).json({ status: 'success', data: { users } })
 })

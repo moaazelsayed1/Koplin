@@ -4,7 +4,7 @@ const Factory = require(path.join(__dirname, 'handlerFactory'))
 const catchAsync = require(path.join(__dirname, '..', 'utils', 'catchAsync'))
 
 exports.getTasksByUser = catchAsync(async (req, res, next) => {
-  const userId = req.user.user_id
+  const userId = req.user.dataValues.user_id
   const tasks = await Task.findAll({
     where: {
       assignee_id: userId,
@@ -35,6 +35,17 @@ exports.getTasksByBoard = catchAsync(async (req, res, next) => {
   })
 })
 
+exports.setBoardId = async (req, res, next) => {
+  const userId = req.user.dataValues.user_id
+
+  req.body.created_by = userId
+  next()
+}
+
+exports.setTaskId = (req, res, next) => {
+  req.params.id = req.params.taskId
+  next()
+}
 exports.getAllTasks = Factory.getAll(Task)
 
 exports.createTask = Factory.createOne(Task)

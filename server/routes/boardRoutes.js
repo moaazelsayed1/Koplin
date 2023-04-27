@@ -14,11 +14,11 @@ const authController = require(path.join(
   'authController'
 ))
 
-const topicUserController = require(path.join(
+const boardUserController = require(path.join(
   __dirname,
   '..',
   'controllers',
-  'topicUserController'
+  'boardUserController'
 ))
 
 const router = express.Router()
@@ -30,14 +30,20 @@ router.use(authController.protect)
 
 router
   .route('/topic/:topicId')
-  .get(topicUserController.setTopicUserId, boardController.getAllBoardsByTopic)
-  .post(topicUserController.setTopicUserId, boardController.createBoard)
+  .get(boardUserController.setBoardUserId, boardController.getAllBoardsByTopic)
+  .post(boardUserController.setBoardUserId, boardController.createBoard)
 
 router
-  .route('/topic/:topicId/board/:id')
-  .get(topicUserController.setTopicUserId, boardController.getBoardById)
-  .patch(topicUserController.setTopicUserId, boardController.updateBoard)
-  .delete(topicUserController.setTopicUserId, boardController.deleteBoard)
+  .route('/:id')
+  .get(boardController.checkUserInBoard, boardController.getBoardById)
+  .patch(boardController.checkBoardCreator, boardController.updateBoard)
+  .delete(boardController.checkBoardCreator, boardController.deleteBoard)
+
+router.get(
+  '/board/:id/user/:userId',
+  boardController.checkUserInBoard,
+  boardController.addUserToBoard
+)
 
 // TODO => all boards of a user (maybe later)
 

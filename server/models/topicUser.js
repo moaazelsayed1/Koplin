@@ -1,17 +1,24 @@
 const path = require('path')
 const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
+const User = require(path.join('..', 'models', 'user'))
+const Topic = require(path.join(__dirname, '..', 'models', 'topic'))
 
-const User = require('./user')
-const Topic = require('./topic')
-
-const Topic_User = sequelize.define(
-  'Topic_User',
+const TopicUser = sequelize.define(
+  'topic_user',
   {
     topic_user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    topic_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -19,7 +26,7 @@ const Topic_User = sequelize.define(
   }
 )
 
-Topic_User.belongsTo(Topic, { foreignKey: 'topic_id' })
-Topic_User.belongsTo(User, { foreignKey: 'user_id' })
+TopicUser.belongsTo(User, { foreignKey: 'user_id' })
+TopicUser.belongsTo(Topic, { foreignKey: 'topic_id' })
 
-module.exports = Topic_User
+module.exports = TopicUser

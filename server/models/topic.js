@@ -25,11 +25,11 @@ const Topic = sequelize.define('Topic', {
 
 Topic.belongsTo(User, { foreignKey: 'created_by' })
 
-Topic.afterCreate(async (topic, options) => {
-  const Topic_User = require('./topicUser')
-  await Topic_User.create({
-    topic_id: topic.topic_id,
-    user_id: topic.created_by,
+Topic.afterCreate(async (board, options) => {
+  const TopicUser = require('./topicUser')
+  await TopicUser.create({
+    user_id: board.created_by,
+    topic_id: board.topic_id,
   })
 })
 
