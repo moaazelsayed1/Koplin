@@ -48,9 +48,15 @@ router.patch(
 )
 
 router.get(
-  '/topics/:id/users',
+  '/topic/:id/users',
   authController.protect,
   userController.getUsersByTopic
+)
+
+router.get(
+  '/board/:id/users',
+  authController.protect,
+  userController.getUsersByBoard
 )
 
 router.get('/:username', userController.getUserByUsername)

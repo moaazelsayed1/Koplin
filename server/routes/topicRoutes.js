@@ -6,6 +6,7 @@ const topicController = require(path.join(
   'controllers',
   'topicController'
 ))
+
 const authController = require(path.join(
   __dirname,
   '..',
@@ -26,12 +27,6 @@ router.use(authController.protect)
 router.post('/', topicController.setCreator, topicController.createTopic)
 
 router.get('/myTopics', topicController.getTopicsByUser)
-
-router.get(
-  '/:topicId/user/:userId',
-  topicController.checkUserInTopic,
-  topicController.addUserToTopic
-)
 
 router.patch(
   '/:id',
