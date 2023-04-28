@@ -46,10 +46,9 @@ const AddNewBoard = (props) => {
             return
         }
         try {
-            const res = await BoardApi.create({
+            const res = await BoardApi.create(topic_id, {
                 board_title,
                 board_description,
-                topic_id,
             })
             setLoading(false)
             setNewBoardName('')
