@@ -36,12 +36,8 @@ const Home = (props) => {
         const getTasks = async () => {
             try {
                 const res = await TaskApi.getAllmyTasks()
-                console.log(res.data)
                 setData(res.data.tasks)
-                console.log(data)
-            } catch (err) {
-                console.log(err)
-            }
+            } catch (err) {}
         }
         getTasks()
 
@@ -109,7 +105,7 @@ const Home = (props) => {
             updateData(data, destinationTasks, destinationColIndex)
         }
         try {
-            await TaskApi.updateTask(removed.task_id, {
+            await TaskApi.updateTask(boardId, removed.task_id, {
                 ...removed,
                 label: destinationColIndex,
             })

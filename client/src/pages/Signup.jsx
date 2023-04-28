@@ -143,6 +143,7 @@ const Signup = () => {
             navigate('/')
         } catch (err) {
             setLoading(false)
+            console.log(err)
             seterr(err.response.data.error)
             const addMessages = () => {
                 msgs.current.show([

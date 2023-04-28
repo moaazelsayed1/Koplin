@@ -52,7 +52,7 @@ const TaskOverlay = (props) => {
 
     const SubmitHandler = async () => {
         try {
-            const res = await TaskApi.updateTask(task.task_id, {
+            const res = await TaskApi.updateTask(props.boardId, task.task_id, {
                 position: `${task.position}`,
                 task_title: `${title}`,
                 task_description: `${description}`,

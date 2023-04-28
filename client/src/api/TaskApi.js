@@ -2,8 +2,9 @@ import axiosClient from './axiosClient'
 
 const TaskApi = {
     create: (params) => axiosClient.post('tasks', params),
-    updateTask: (id, params) => axiosClient.put(`tasks/${id}`, params),
-    members: (id) => axiosClient.get(`users/topics/${id}/users`),
+    updateTask: (idBoard, idTask, params) =>
+        axiosClient.patch(`tasks/board/${idBoard}/task/${idTask}`, params),
+    members: (id) => axiosClient.get(`users/topic/${id}/users`),
     delete: (id) => axiosClient.delete(`tasks/${id}`),
     getAllmyTasks: () => axiosClient.get(`tasks/myTasks`),
 }

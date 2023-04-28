@@ -24,6 +24,7 @@ import TaskOverlay from './modals/TaskOverlay'
 import TopicApi from '../../api/TopicApi'
 
 const KanBan = (props) => {
+    const thisBoardId = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -105,7 +106,7 @@ const KanBan = (props) => {
         if (props.topicId) {
             getUsers()
         }
-    }, [props.data, navigate])
+    }, [props.boardId, props.title, thisBoardId, props.data, navigate])
 
     // Drag and drop position changer functions
     function updateData(data, sourceTasks, newLabel) {
@@ -160,7 +161,7 @@ const KanBan = (props) => {
             updateData(data, destinationTasks, destinationColIndex)
         }
         try {
-            await TaskApi.updateTask(removed.task_id, {
+            await TaskApi.updateTask(boardId, removed.task_id, {
                 ...removed,
                 label: destinationColIndex,
             })
@@ -224,7 +225,7 @@ const KanBan = (props) => {
     }
 
     return (
-        <div className=" flex flex-col h-screen">
+        <div key={boardId} className=" flex flex-col h-screen">
             <ConfirmDialog />
 
             <InviteMember
@@ -718,6 +719,7 @@ const KanBan = (props) => {
                 </div>
             </DragDropContext>
             <TaskOverlay
+                boardId={boardId}
                 visible={visibleRight}
                 onHide={() => setVisibleRight(false)}
                 task={taskShown}

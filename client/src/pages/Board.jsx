@@ -8,19 +8,18 @@ const Board = () => {
     const { boardId } = useParams()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-    const [topicId, settopicId] = useState('')
+    const [topicId, setTopicId] = useState('')
     const [lists, setLists] = useState([])
-    const [icon, setIcon] = useState('')
     const navigate = useNavigate()
+
     useEffect(() => {
         const getBoard = async () => {
             try {
                 const res = await BoardApi.getOne(boardId)
                 setTitle(res.data.data.board_title)
                 setDescription(res.data.data.board_description)
-                settopicId(res.data.data.topic_id)
+                setTopicId(res.data.data.topic_id)
             } catch (error) {
-                // alert('inside board erro', error)
                 navigate('/')
             }
         }
@@ -31,9 +30,10 @@ const Board = () => {
                 setLists(res2.data.tasks)
             } catch (error) {}
         }
+
         getBoard()
         getTasks()
-    }, [navigate])
+    }, [boardId, navigate])
 
     return (
         <div>
@@ -43,6 +43,7 @@ const Board = () => {
                 title={title}
                 description={description}
                 topicId={topicId}
+                key={boardId + 1}
             />
         </div>
     )

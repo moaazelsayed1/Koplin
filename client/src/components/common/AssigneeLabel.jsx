@@ -24,23 +24,24 @@ const AssigneeLabel = (props) => {
         const getTheUser = async (id) => {
             if (id) {
                 const result = dsds.find((item) => +item.id === +props.id)
+
                 if (result) {
                     // If result is found, update the state with the name
                     setuser(result.name)
                 } else {
                     // If result is not found, make the API call
                     try {
-                        const res = await UserApi.getOnebyId(id)
-                        const name = res.data.data.username
-                        setuser(name)
-                        dispatch(setCashs([...dsds, { id: +props.id, name }]))
+                        // const res = await UserApi.getOnebyId(id)
+                        // const name = res.data.data.username
+                        // setuser(name)
+                        // dispatch(setCashs([...dsds, { id: +props.id, name }]))
                     } catch (err) {}
                 }
             }
         }
 
         getTheUser(props.id)
-    }, [navigate, props.id])
+    }, [navigate, props.title, props.id])
 
     return (
         <div className="flex flex-wrap gap-2 mt-3 items-center justify-between w-full ">
