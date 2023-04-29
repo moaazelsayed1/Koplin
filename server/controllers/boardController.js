@@ -63,7 +63,7 @@ exports.checkBoardCreator = catchAsync(async (req, res, next) => {
 })
 
 exports.addUserToBoard = catchAsync(async (req, res, next) => {
-  const user_id = req.user.dataValues.user_id
+  const user_id = req.params.userId
   const board_id = req.params.id
 
   const board = await Board.findOne({
@@ -71,19 +71,23 @@ exports.addUserToBoard = catchAsync(async (req, res, next) => {
       board_id: board_id,
     },
   })
+  console.log(board.topic_id)
 
-  const topicUser = await TopicUser.findOne({
+  let topicUser = await TopicUser.findOne({
     where: {
       user_id: user_id,
+      topic_id: board.topic_id,
     },
   })
+
   if (!topicUser) {
-    await TopicUser.create({
+    topicUser = await TopicUser.create({
       user_id: user_id,
       topic_id: board.topic_id,
     })
   }
 
+  console.log(topicUser)
   const boardUser = await BoardUser.create({
     user_id: user_id,
     board_id: board_id,
