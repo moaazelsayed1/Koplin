@@ -47,6 +47,7 @@ Board.afterCreate(async (board, options) => {
   const topicUser = await TopicUser.findOne({
     where: {
       user_id: board.created_by,
+      topic_id: board.topic_id,
     },
   })
   if (!topicUser) {
