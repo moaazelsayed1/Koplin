@@ -408,14 +408,14 @@ const SideBar = () => {
                             severity="secondary"
                             aria-label="LogOut"
                         />
-                        <input
+                        {/* <input
                             type="file"
                             multiple
                             accept="image/*"
                             onChange={onImageChange}
-                        />
+                        /> */}
                     </div>
-                    <button onClick={postPohot}>dsd</button>
+                    {/* <button onClick={postPohot}>dsd</button> */}
                 </div>
             </div>
         </>

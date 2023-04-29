@@ -9,9 +9,12 @@ import { Tooltip } from 'primereact/tooltip'
 import { Menu } from 'primereact/menu'
 import { ConfirmDialog } from 'primereact/confirmdialog' // For <ConfirmDialog /> component
 import { confirmDialog } from 'primereact/confirmdialog' // For confirmDialog method
+import { Avatar } from 'primereact/avatar'
 
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { setTopics } from '../../redux/features/topicSlice'
+
 //APIS
 import TaskApi from '../../api/TaskApi'
 //MODALS
@@ -34,7 +37,8 @@ const KanBan = (props) => {
 
     const [editing, setediting] = useState(false)
     const [newBoardName, setnewBoardName] = useState(`${props.title}`)
-
+    const cashes = useSelector((state) => state.cash.value)
+    console.log('cashe', cashes)
     const [inviteMemberModal, setInviteMemberModal] = useState(false)
     const [visibleRight, setVisibleRight] = useState(false)
     const deletetheboard = (event) => {
@@ -309,7 +313,14 @@ const KanBan = (props) => {
                         </>
                     )}
                 </div>
-                <div className="flex">
+                <div className="flex flex-row items-center">
+                    <div className=" flex flex-row mr-6 ">
+                        {cashes.map((item) => (
+                            <div className=" mr-[-12px]" key={item.id}>
+                                <Avatar image={item.photo} shape="circle" />
+                            </div>
+                        ))}
+                    </div>
                     <Menu className="" model={items} popup ref={menu} />
                     <Button
                         className=" h-9 "
