@@ -47,6 +47,7 @@ const Home = (props) => {
                 const newObjects = res.data.users.map((obj) => ({
                     id: obj.user_id,
                     name: obj.username,
+                    photo: obj.photo,
                 }))
                 dispatch(setCashs([...newObjects]))
             } catch (err) {}

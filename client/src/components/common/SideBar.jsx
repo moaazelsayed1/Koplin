@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Avatar } from 'primereact/avatar'
+import { AvatarGroup } from 'primereact/avatargroup' //Optional for grouping
+
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
 import AddNewTopic from './modals/AddNewTopic'
@@ -23,7 +26,7 @@ const SideBar = () => {
     const user = useSelector((state) => state.user.value)
     const topics = useSelector((state) => state.topic.value)
     const boards = useSelector((state) => state.board.value)
-
+    console.log('thisuser', user)
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
@@ -369,9 +372,16 @@ const SideBar = () => {
                     </div>
 
                     <div className="flex flex-row items-center justify-between pb-6 pt-3 border-t ">
-                        <h3 className="text-base font-normal text-slate-700	">
-                            {user?.username}
-                        </h3>
+                        <div className="flex flex-row gap-2 items-center">
+                            <Avatar
+                                className="rounded-lg overflow-hidden"
+                                image={user.photo}
+                            />
+
+                            <h3 className="text-base font-normal text-slate-700	">
+                                {user?.username}
+                            </h3>
+                        </div>
                         <Button
                             onClick={logOut}
                             className="w-8"

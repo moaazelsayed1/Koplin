@@ -49,7 +49,7 @@ const InviteMember = (props) => {
                     } else {
                         try {
                             const res = await TopicApi.addMemeber(
-                                props.topicId,
+                                props.boardId,
                                 thisUser.data.data[0].user_id
                             )
                         } catch (err) {}

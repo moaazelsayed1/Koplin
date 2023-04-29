@@ -62,12 +62,13 @@ const AddNewTask = (props) => {
         setLabel(props.labelId)
         const members = async () => {
             try {
-                const res = await TaskApi.members(props.topicId)
+                const res = await TaskApi.members(props.boardId)
                 const topicMembersRes = res.data.users.map((user) => ({
                     name: user.username,
                     code: user.user_id,
                 }))
                 setTopicMembers(topicMembersRes)
+                console.log(topicMembers)
             } catch (err) {}
         }
         {

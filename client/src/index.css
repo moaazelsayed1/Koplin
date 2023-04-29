@@ -129,3 +129,10 @@ button,
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.p-chip img {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    margin-left: -4px;
+}

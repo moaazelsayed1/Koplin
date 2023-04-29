@@ -8,6 +8,8 @@ import { setCashs } from '../../redux/features/cashSlice'
 const AssigneeLabel = (props) => {
     const navigate = useNavigate()
     const [user, setuser] = useState('')
+    const [image, setimage] = useState('')
+
     const [Datew, setDate] = useState('')
     const userx = useSelector((state) => state.cash)
     const dsds = userx.value
@@ -28,6 +30,7 @@ const AssigneeLabel = (props) => {
                 if (result) {
                     // If result is found, update the state with the name
                     setuser(result.name)
+                    setimage(result.photo)
                 } else {
                     // If result is not found, make the API call
                     try {
@@ -41,11 +44,17 @@ const AssigneeLabel = (props) => {
         }
 
         getTheUser(props.id)
-    }, [navigate, props.title, props.id])
+    }, [navigate, props.title, props.id, userx])
 
     return (
         <div className="flex flex-wrap gap-2 mt-3 items-center justify-between w-full ">
-            {user && <Chip className="text-sm py-0 rounded-lg" label={user} />}
+            {user && (
+                <Chip
+                    className="  text-sm py-0 rounded-full pr-5"
+                    label={user}
+                    image={image}
+                />
+            )}
             <p className="text-sm text-zinc-500">{Datew}</p>
         </div>
     )

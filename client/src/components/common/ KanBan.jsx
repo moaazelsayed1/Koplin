@@ -99,6 +99,7 @@ const KanBan = (props) => {
                 const newObjects = res.data.users.map((obj) => ({
                     id: obj.user_id,
                     name: obj.username,
+                    photo: obj.photo,
                 }))
                 dispatch(setCashs([...newObjects]))
             } catch (err) {}
@@ -232,6 +233,7 @@ const KanBan = (props) => {
                 visible={inviteMemberModal}
                 onVisble={() => setInviteMemberModal(false)}
                 topicId={props.topicId}
+                boardId={boardId}
             />
             <AddNewTask
                 visible={NewBoardModal}
