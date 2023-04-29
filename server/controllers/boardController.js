@@ -8,6 +8,7 @@ const BoardUser = require(path.join(__dirname, '..', 'models', 'boardUser'))
 const TopicUser = require(path.join(__dirname, '..', 'models', 'topicUser'))
 
 exports.getAllBoardsByTopic = catchAsync(async (req, res, next) => {
+  const userId = req.user.dataValues.user_id
   const { topicId } = req.params
 
   const topic = await Topic.findByPk(topicId)
@@ -16,7 +17,15 @@ exports.getAllBoardsByTopic = catchAsync(async (req, res, next) => {
     return next(new AppError('No topic found with that ID', 404))
   }
 
-  const boards = await Board.findAll({ where: { topic_id: topicId } })
+  const boardUsers = await BoardUser.findAll({
+    where: { user_id: userId },
+    include: {
+      model: Board,
+      where: { topic_id: topicId },
+    },
+  })
+
+  const boards = boardUsers.map((bu) => bu.Board)
 
   res.status(200).json({
     status: 'success',
@@ -71,7 +80,6 @@ exports.addUserToBoard = catchAsync(async (req, res, next) => {
       board_id: board_id,
     },
   })
-  console.log(board.topic_id)
 
   let topicUser = await TopicUser.findOne({
     where: {
@@ -87,7 +95,6 @@ exports.addUserToBoard = catchAsync(async (req, res, next) => {
     })
   }
 
-  console.log(topicUser)
   const boardUser = await BoardUser.create({
     user_id: user_id,
     board_id: board_id,
