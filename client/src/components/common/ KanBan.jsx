@@ -134,6 +134,7 @@ const KanBan = (props) => {
 
         const destinationColIndex = destination.droppableId
 
+        console.log(source)
         const sourceCol = data.filter(
             (task) => task.label === `${sourceColIndex}`
         )
@@ -162,13 +163,15 @@ const KanBan = (props) => {
             updateData(data, destinationTasks, destinationColIndex)
         }
         try {
-            await TaskApi.updateTask(boardId, removed.task_id, {
-                ...removed,
-                label: destinationColIndex,
-            })
-        } catch (error) {
-            alert('avc', error)
-        }
+            const res = await TaskApi.updateTask(
+                removed.board_id,
+                removed.task_id,
+                {
+                    ...removed,
+                    label: destinationColIndex,
+                }
+            )
+        } catch (error) {}
     }
 
     // MODAL UTILS

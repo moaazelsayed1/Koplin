@@ -11,17 +11,20 @@ const getToken = () => {
 
 const axiosClient = axios.create({
     baseURL: baseUrl,
-    headers: { 'content-type': 'application/json' },
+    headers: () => ({
+        'content-type': 'application/json',
+        // Authorization: `Bearer ${getToken()}`,
+    }),
     paramsSerializer: (params) => queryString.stringify(params),
 })
 
 axiosClient.interceptors.request.use(async (config) => {
     return {
         ...config,
-        headers: {
+        headers: () => ({
             'content-type': 'application/json',
             // Authorization: `Bearer ${getToken()}`,
-        },
+        }),
     }
 })
 

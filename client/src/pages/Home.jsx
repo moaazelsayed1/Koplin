@@ -106,7 +106,7 @@ const Home = (props) => {
             updateData(data, destinationTasks, destinationColIndex)
         }
         try {
-            await TaskApi.updateTask(boardId, removed.task_id, {
+            await TaskApi.updateTask(removed.board_id, removed.task_id, {
                 ...removed,
                 label: destinationColIndex,
             })

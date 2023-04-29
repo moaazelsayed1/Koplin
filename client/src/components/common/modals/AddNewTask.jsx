@@ -68,7 +68,6 @@ const AddNewTask = (props) => {
                     code: user.user_id,
                 }))
                 setTopicMembers(topicMembersRes)
-                console.log(topicMembers)
             } catch (err) {}
         }
         {

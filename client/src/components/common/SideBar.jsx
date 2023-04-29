@@ -26,7 +26,6 @@ const SideBar = () => {
     const user = useSelector((state) => state.user.value)
     const topics = useSelector((state) => state.topic.value)
     const boards = useSelector((state) => state.board.value)
-    console.log('thisuser', user)
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
@@ -34,14 +33,18 @@ const SideBar = () => {
     const [image, setimage] = useState([])
 
     const onImageChange = async (e) => {
-        setimage([...e.target.files])
+        setimage(e.target.files[0])
+    }
+
+    const postPohot = async () => {
+        const formData = new FormData()
+        formData.append('photo', image)
         try {
-            res = await UserApi.update(user.user_id, { photo: image[0] })
+            const res = await UserApi.update(formData)
+            console.log(res)
         } catch (err) {
             console.log(err)
-            console.log('sds')
         }
-        console.log(image[0])
     }
 
     useEffect(() => {
@@ -405,13 +408,14 @@ const SideBar = () => {
                             severity="secondary"
                             aria-label="LogOut"
                         />
-                        {/* <input
+                        <input
                             type="file"
                             multiple
                             accept="image/*"
                             onChange={onImageChange}
-                        /> */}
+                        />
                     </div>
+                    <button onClick={postPohot}>dsd</button>
                 </div>
             </div>
         </>
