@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
-import { AvatarGroup } from 'primereact/avatargroup' //Optional for grouping
+import { FileUpload } from 'primereact/fileupload'
 
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
@@ -30,6 +30,19 @@ const SideBar = () => {
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
+
+    const [image, setimage] = useState([])
+
+    const onImageChange = async (e) => {
+        setimage([...e.target.files])
+        try {
+            res = await UserApi.update(user.user_id, { photo: image[0] })
+        } catch (err) {
+            console.log(err)
+            console.log('sds')
+        }
+        console.log(image[0])
+    }
 
     useEffect(() => {
         if (!boardId) {
@@ -392,6 +405,12 @@ const SideBar = () => {
                             severity="secondary"
                             aria-label="LogOut"
                         />
+                        {/* <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={onImageChange}
+                        /> */}
                     </div>
                 </div>
             </div>

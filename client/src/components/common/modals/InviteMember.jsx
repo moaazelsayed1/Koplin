@@ -33,6 +33,7 @@ const InviteMember = (props) => {
                 try {
                     const res = await UserApi.getOne(item)
                     const thisUser = res
+                    console.log('this user', thisUser)
                     if (thisUser.results === 0) {
                         const suc = `${item} is not a user`
                         setLoading(false)
@@ -48,9 +49,11 @@ const InviteMember = (props) => {
                         return
                     } else {
                         try {
+                            console.log('start adding')
+                            console.log(thisUser.user.user_id)
                             const res = await TopicApi.addMemeber(
                                 props.boardId,
-                                thisUser.data.data[0].user_id
+                                thisUser.user.user_id
                             )
                         } catch (err) {}
                     }
