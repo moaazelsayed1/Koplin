@@ -98,7 +98,8 @@ const KanBan = (props) => {
 
         const getUsers = async () => {
             try {
-                const res = await TopicApi.getAllusers(thisBoardId)
+                const res = await TopicApi.getAllusers(thisBoardId.boardId)
+                console.log('res', res)
                 const newObjects = res.data.users.map((obj) => ({
                     id: obj.user_id,
                     name: obj.username,
