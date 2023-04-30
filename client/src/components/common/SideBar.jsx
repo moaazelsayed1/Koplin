@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
-import { FileUpload } from 'primereact/fileupload'
 
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
@@ -331,6 +330,21 @@ const SideBar = () => {
         })
     }
 
+    const Tree = () => {
+        return (
+            <Tree
+                onSelect={onSelect}
+                selectionMode="single"
+                selectionKeys={selectedKey}
+                expandedKeys={expandedKeys}
+                onSelectionChange={(e) => setSelectedKey(e.value)}
+                value={nodes ? nodes : []}
+                nodeTemplate={nodeTemplate}
+                className="w-full md:w-30rem"
+            />
+        )
+    }
+
     return (
         <>
             {' '}
@@ -382,22 +396,9 @@ const SideBar = () => {
                         </button>
 
                         <div className=" flex justify-content-center">
-                            {!nodes || !topics.length ? (
-                                <TreeSkeleton />
-                            ) : (
-                                <Tree
-                                    onSelect={onSelect}
-                                    selectionMode="single"
-                                    selectionKeys={selectedKey}
-                                    expandedKeys={expandedKeys}
-                                    onSelectionChange={(e) =>
-                                        setSelectedKey(e.value)
-                                    }
-                                    value={nodes ? nodes : []}
-                                    nodeTemplate={nodeTemplate}
-                                    className="w-full md:w-30rem"
-                                />
-                            )}
+                            <Suspense fallback={<div>Loading...</div>}>
+                                <Tree />
+                            </Suspense>
                         </div>
                     </div>
 
