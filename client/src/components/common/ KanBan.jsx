@@ -1,5 +1,5 @@
 // REACT
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Suspense } from 'react'
 import { setCashs } from '../../redux/features/cashSlice'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -254,7 +254,7 @@ const KanBan = (props) => {
                     {!editing ? (
                         <>
                             <p className="text-2xl font-semibold text-stone-900 mr-3">
-                                {newBoardName}
+                                {props.title}
                             </p>
                             <Tooltip target=".pi-pencil" />
                             <i

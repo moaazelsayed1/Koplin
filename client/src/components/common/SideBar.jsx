@@ -19,6 +19,7 @@ import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup me
 import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
 import { setUser } from '../../redux/features/userSlice'
+import TreeSkeleton from '../Skeletons/TreeSkeleton'
 const SideBar = () => {
     const { boardId } = useParams()
     const navigate = useNavigate()
@@ -166,6 +167,9 @@ const SideBar = () => {
             const res = await UserApi.LogOut()
             dispatch(setUser(null))
             localStorage.removeItem('token')
+            dispatch(setBoards([]))
+            dispatch(setTopics([]))
+
             navigate('/login')
         } catch (error) {}
     }
@@ -378,18 +382,22 @@ const SideBar = () => {
                         </button>
 
                         <div className=" flex justify-content-center">
-                            <Tree
-                                onSelect={onSelect}
-                                selectionMode="single"
-                                selectionKeys={selectedKey}
-                                expandedKeys={expandedKeys}
-                                onSelectionChange={(e) =>
-                                    setSelectedKey(e.value)
-                                }
-                                value={nodes ? nodes : []}
-                                nodeTemplate={nodeTemplate}
-                                className="w-full md:w-30rem"
-                            />
+                            {!nodes || !topics.length ? (
+                                <TreeSkeleton />
+                            ) : (
+                                <Tree
+                                    onSelect={onSelect}
+                                    selectionMode="single"
+                                    selectionKeys={selectedKey}
+                                    expandedKeys={expandedKeys}
+                                    onSelectionChange={(e) =>
+                                        setSelectedKey(e.value)
+                                    }
+                                    value={nodes ? nodes : []}
+                                    nodeTemplate={nodeTemplate}
+                                    className="w-full md:w-30rem"
+                                />
+                            )}
                         </div>
                     </div>
 

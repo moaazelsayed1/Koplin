@@ -3,7 +3,6 @@ import { Dialog } from 'primereact/dialog'
 import { Toast } from 'primereact/toast'
 import { Chips } from 'primereact/chips'
 import { Button } from 'primereact/button'
-
 import { useNavigate } from 'react-router-dom'
 
 import UserApi from '../../../api/userApi'
