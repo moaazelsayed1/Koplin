@@ -7,7 +7,7 @@ const TopicApi = {
     deleteTopic: (id) => axiosClient.delete(`topics/${id}`),
     addMemeber: (boardId, userId) =>
         axiosClient.get(`boards/board/${boardId}/user/${userId}`),
-    getAllusers: (id) => axiosClient.get(`users/topic/${id}/users`),
+    getAllusers: (id) => axiosClient.get(`users/board/${id}/users`),
 }
 
 export default TopicApi
