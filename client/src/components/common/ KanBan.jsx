@@ -38,7 +38,6 @@ const KanBan = (props) => {
     const [editing, setediting] = useState(false)
     const [newBoardName, setnewBoardName] = useState(`${props.title}`)
     const cashes = useSelector((state) => state.cash.value)
-    console.log('cashe', cashes)
     const [inviteMemberModal, setInviteMemberModal] = useState(false)
     const [visibleRight, setVisibleRight] = useState(false)
     const deletetheboard = (event) => {
@@ -138,7 +137,6 @@ const KanBan = (props) => {
 
         const destinationColIndex = destination.droppableId
 
-        console.log(source)
         const sourceCol = data.filter(
             (task) => task.label === `${sourceColIndex}`
         )

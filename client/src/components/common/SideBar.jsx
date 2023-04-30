@@ -41,10 +41,7 @@ const SideBar = () => {
         formData.append('photo', image)
         try {
             const res = await UserApi.update(formData)
-            console.log(res)
-        } catch (err) {
-            console.log(err)
-        }
+        } catch (err) {}
     }
 
     useEffect(() => {
@@ -69,7 +66,7 @@ const SideBar = () => {
     // Getting Topics and Boards
     useEffect(() => {
         const getTopics = async () => {
-            let retries = 3
+            let retries = 1
             let success = false
             while (retries > 0 && !success) {
                 try {
@@ -77,6 +74,14 @@ const SideBar = () => {
                     const finres = res.data.topics
                         .filter((topic) => topic !== null)
                         .sort((a, b) => a.topic_id - b.topic_id)
+                    let boardsHere = []
+
+                    for (let item of finres) {
+                        let topic_id = item.topic_id
+                        const thisTopic = await getBoards(topic_id)
+                        boardsHere = [...boardsHere, ...thisTopic]
+                    }
+                    dispatch(setBoards(boardsHere))
                     dispatch(setTopics(finres))
                     success = true
                 } catch (error) {
@@ -85,13 +90,14 @@ const SideBar = () => {
             }
         }
 
-        const getBoards = async () => {
+        const getBoards = async (topicid) => {
             try {
-                const res = await BoardApi.getAll()
-                const boardsres = res.data.data.sort(
+                const res = await BoardApi.getTopicBoard(topicid)
+
+                const boardsres = res.data.boards.sort(
                     (a, b) => a.board_id - b.board_id
                 )
-                dispatch(setBoards(boardsres))
+                return boardsres
             } catch (error) {}
         }
 
@@ -128,7 +134,7 @@ const SideBar = () => {
             }
         }
 
-        if (topics.length && boards.length) {
+        if (topics.length || boards.length) {
             fillData()
         }
     }, [topics, boards, navigate])
