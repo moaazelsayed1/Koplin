@@ -10,6 +10,7 @@ import { Menu } from 'primereact/menu'
 import { ConfirmDialog } from 'primereact/confirmdialog' // For <ConfirmDialog /> component
 import { confirmDialog } from 'primereact/confirmdialog' // For confirmDialog method
 import { Avatar } from 'primereact/avatar'
+import { Toast } from 'primereact/toast'
 
 //DRAG AND DROP
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -30,7 +31,7 @@ const KanBan = (props) => {
     const thisBoardId = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    const toast = useRef(null)
     const menu = useRef(null)
     const [data, setData] = useState('')
     const [boardId, setboardId] = useState('')
@@ -48,10 +49,11 @@ const KanBan = (props) => {
 
                 navigate('/')
             } catch (error) {
+                console.log(error)
                 toast.current.show({
                     severity: 'warn',
                     summary: 'Rejected',
-                    detail: 'We could not delete this board',
+                    detail: `${error.data.message}`,
                     life: 3000,
                 })
             }
@@ -235,7 +237,7 @@ const KanBan = (props) => {
     return (
         <div key={boardId} className=" flex flex-col h-screen">
             <ConfirmDialog />
-
+            <Toast ref={toast} />
             <InviteMember
                 visible={inviteMemberModal}
                 onVisble={() => setInviteMemberModal(false)}

@@ -159,6 +159,8 @@ const SideBar = () => {
         try {
             const res = await UserApi.LogOut()
             dispatch(setUser(null))
+            dispatch(setTopics([]))
+            dispatch(setBoards([]))
             localStorage.removeItem('token')
             navigate('/login')
         } catch (error) {}
