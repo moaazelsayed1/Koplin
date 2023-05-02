@@ -30,23 +30,6 @@ const SideBar = () => {
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
 
-    const [image, setimage] = useState([])
-
-    const onImageChange = async (e) => {
-        setimage(e.target.files[0])
-    }
-
-    const postPohot = async () => {
-        const formData = new FormData()
-        formData.append('photo', image)
-        try {
-            const res = await UserApi.update(formData)
-            console.log(res)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     useEffect(() => {
         if (!boardId) {
             setSelectedKey('')
@@ -410,14 +393,7 @@ const SideBar = () => {
                             severity="secondary"
                             aria-label="LogOut"
                         />
-                        {/* <input
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={onImageChange}
-                        /> */}
                     </div>
-                    {/* <button onClick={postPohot}>dsd</button> */}
                 </div>
             </div>
         </>

@@ -16,6 +16,7 @@ import 'primereact/resources/primereact.min.css'
 //icons
 import 'primeicons/primeicons.css'
 import Loading from './components/common/Loading'
+import AccountSettings from './pages/AccountSettings'
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                     <Route index element={<Home />} />
                     <Route path="boards" element={<Home />} />
                     <Route path="boards/:boardId" element={<Board />} />
+                    <Route path="account" element={<AccountSettings />} />
                 </Route>
             </Routes>
         </BrowserRouter>
