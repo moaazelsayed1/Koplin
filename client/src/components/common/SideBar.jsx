@@ -373,16 +373,18 @@ const SideBar = () => {
                     </div>
 
                     <div className="flex flex-row items-center justify-between pb-6 pt-3 border-t ">
-                        <div className="flex flex-row gap-2 items-center">
-                            <Avatar
-                                className="rounded-lg overflow-hidden"
-                                image={user.photo}
-                            />
+                        <Link to="/account">
+                            <div className="flex flex-row gap-2 items-center">
+                                <Avatar
+                                    className="rounded-lg overflow-hidden"
+                                    image={user.photo}
+                                />
 
-                            <h3 className="text-base font-normal text-slate-700	">
-                                {user?.username}
-                            </h3>
-                        </div>
+                                <h3 className="text-base font-normal text-slate-700	">
+                                    {user?.username}
+                                </h3>
+                            </div>
+                        </Link>
                         <Button
                             onClick={logOut}
                             className="w-8"
