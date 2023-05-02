@@ -7,6 +7,7 @@ import UserApi from '../api/userApi'
 const AccountSettings = () => {
     const user = useSelector((state) => state.user.value)
     console.log(user)
+    const [loading, setloading] = useState(false)
     const [image, setimage] = useState([user.photo])
     const [name, setName] = useState(user.username)
     const [email, setEmail] = useState(user.email)
@@ -16,6 +17,7 @@ const AccountSettings = () => {
     }
 
     const postPohot = async () => {
+        setloading(true)
         const formData = new FormData()
 
         formData.append('photo', image)
@@ -27,8 +29,10 @@ const AccountSettings = () => {
         }
         try {
             const res = await UserApi.update(formData)
+            setloading(false)
             window.location.reload()
         } catch (err) {
+            setloading(false)
             console.log(err)
         }
     }
@@ -98,6 +102,7 @@ const AccountSettings = () => {
                     </div>
                 </div>
                 <Button
+                    loading={loading}
                     className=" mt-4 h-9 shadow-btn"
                     label="Update"
                     size="small"
