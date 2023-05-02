@@ -5,7 +5,8 @@ const TaskApi = {
     updateTask: (idBoard, idTask, params) =>
         axiosClient.patch(`tasks/board/${idBoard}/task/${idTask}`, params),
     members: (id) => axiosClient.get(`users/board/${id}/users`),
-    delete: (id) => axiosClient.delete(`tasks/${id}`),
+    delete: (boardid, taskid) =>
+        axiosClient.delete(`tasks/board/${boardid}/task/${taskid}`),
     getAllmyTasks: () => axiosClient.get(`tasks/myTasks`),
 }
 

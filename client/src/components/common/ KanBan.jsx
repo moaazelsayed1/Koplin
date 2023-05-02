@@ -207,6 +207,8 @@ const KanBan = (props) => {
                 description: props.description,
                 topicId: props.topicId,
             })
+
+            console.log(res)
             setediting(false)
         } catch (err) {}
     }

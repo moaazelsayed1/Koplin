@@ -8,6 +8,7 @@ import { Calendar } from 'primereact/calendar'
 import TaskApi from '../../../api/TaskApi'
 
 const TaskOverlay = (props) => {
+    console.log('task', props.task)
     const renderHeader = () => {
         return (
             <span className="ql-formats">
@@ -81,7 +82,7 @@ const TaskOverlay = (props) => {
         try {
             props.onDelete(props.task.task_id)
             props.onHide()
-            res = TaskApi.delete(props.task.task_id)
+            res = TaskApi.delete(props.task.board_id, props.task.task_id)
         } catch {}
     }
 

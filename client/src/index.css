@@ -136,3 +136,19 @@ button,
     margin-right: 0.5rem;
     margin-left: -4px;
 }
+
+.p-treenode-label p {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    /* identical to box height, or 133% */
+
+    letter-spacing: -0.01em;
+
+    /* Gray/400 */
+}
