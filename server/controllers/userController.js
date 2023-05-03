@@ -86,7 +86,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const user = await User.findByPk(req.user.dataValues.user_id)
 
   const fields = {
-    username: req.body.name,
+    username: req.body.username,
     email: req.body.email,
     photo: req.body.photo,
   }
