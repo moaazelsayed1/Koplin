@@ -4,7 +4,9 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const helmet = require('helmet')
 
+app.use(helmet())
 app.use(
   cors({
     origin: true,
