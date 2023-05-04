@@ -4,6 +4,9 @@
 
 Koplin is a kanban application built using React, Nodejs, Expressjs, and Postgres. The application allows users to create and manage topics, boards, and tasks, as well as invite friends and collaborate on projects.
 
+https://user-images.githubusercontent.com/88671390/236234070-20f05228-7ce6-413e-8556-2b9e7eb517b5.mp4
+
+
 ## Features
 - Users can create an account and log in to manage their own topics and boards
 - Create and manage topics and boards
@@ -12,6 +15,12 @@ Koplin is a kanban application built using React, Nodejs, Expressjs, and Postgre
 - Edit tasks and move them between different stages (todo, in progress, review, completed)
 - Invite friends and collaborate on projects
 - Edit profile information including username, email, and profile image
+
+
+
+
+
+
 
 ## Tech Stack
 
