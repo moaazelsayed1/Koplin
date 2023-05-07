@@ -1,3 +1,4 @@
+const path = require('path')
 const sequelize = require(path.join(__dirname, '..', 'utils', 'database'))
 const { DataTypes } = require('sequelize')
 const User = require('./user')

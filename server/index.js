@@ -38,6 +38,11 @@ const taskCommentRouter = require(path.join(
   'routes',
   'taskCommentRoutes'
 ))
+const notificationRouter = require(path.join(
+  __dirname,
+  'routes',
+  'notificationRoutes'
+))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -47,6 +52,7 @@ app.use('/api/v1/tasks', taskRouter)
 app.use('/api/v1/topics', topicRouter)
 app.use('/api/v1/boards', boardRouter)
 app.use('/api/v1/task-comments', taskCommentRouter)
+app.use('/api/v1/notifications', notificationRouter)
 
 // routes
 app.all('*', (req, res, next) => {
