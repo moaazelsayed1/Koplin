@@ -2,7 +2,11 @@ const path = require('path')
 const http = require('http')
 const app = require('./index')
 const server = http.createServer(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: true,
+  },
+})
 const User = require(path.join(__dirname, '.', 'models', 'user'))
 const BoardUser = require(path.join(__dirname, '.', 'models', 'boardUser'))
 const Board = require(path.join(__dirname, '.', 'models', 'board'))
