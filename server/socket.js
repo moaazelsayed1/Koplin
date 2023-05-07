@@ -3,8 +3,6 @@ const http = require('http')
 const app = require('./index')
 const server = http.createServer(app)
 
-const cors = require('cors')
-app.use(cors)
 const io = require('socket.io')(server, {
   cors: {
     origin: true,
