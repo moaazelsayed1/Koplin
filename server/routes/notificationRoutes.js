@@ -1,5 +1,11 @@
 const path = require('path')
 const express = require('express')
+const authController = require(path.join(
+  __dirname,
+  '..',
+  'controllers',
+  'authController'
+))
 const notificationController = require(path.join(
   __dirname,
   '..',
@@ -8,6 +14,12 @@ const notificationController = require(path.join(
 ))
 
 const router = express.Router()
+
+router.get(
+  '/myNotifications',
+  authController.protect,
+  notificationController.getNotificationsByUser
+)
 
 router.get('/', notificationController.getAllNotifications)
 
