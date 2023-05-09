@@ -37,7 +37,6 @@ io.on('connection', (socket) => {
       })
   })
 })
-
 const sendBoardInvitation = async (boardId, invitedUserId, invitingUserId) => {
   const receiverId = invitedUserId
   const boardUser = await BoardUser.findOne({
@@ -48,16 +47,17 @@ const sendBoardInvitation = async (boardId, invitedUserId, invitingUserId) => {
   })
 
   if (boardUser) {
-    return {
+    const error = {
       success: false,
       message: 'The user is already a member of the board',
     }
+    throw error
   }
 
   const invitedUser = await User.findByPk(invitedUserId)
   if (!invitedUser) {
-    console.log(`User with id ${invitedUserId} not found`)
-    return { success: false, message: 'User not found' }
+    const error = { success: false, message: 'User not found' }
+    throw error
   }
 
   const senderId = invitingUserId
@@ -75,5 +75,3 @@ const sendBoardInvitation = async (boardId, invitedUserId, invitingUserId) => {
 
   return { success: true, message }
 }
-
-module.exports = io
