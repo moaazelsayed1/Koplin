@@ -73,7 +73,7 @@ const sendBoardInvitation = async (boardId, invitedUserId, invitingUserId) => {
     message,
   })
 
-  return { success: true, message: 'Board invitation sent' }
+  return { success: true, message }
 }
 
 module.exports = io
