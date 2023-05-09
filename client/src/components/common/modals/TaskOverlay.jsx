@@ -8,7 +8,6 @@ import { Calendar } from 'primereact/calendar'
 import TaskApi from '../../../api/TaskApi'
 
 const TaskOverlay = (props) => {
-    console.log('task', props.task)
     const renderHeader = () => {
         return (
             <span className="ql-formats">

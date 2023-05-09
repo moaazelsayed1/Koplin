@@ -4,11 +4,14 @@ import { Toast } from 'primereact/toast'
 import { Chips } from 'primereact/chips'
 import { Button } from 'primereact/button'
 import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
 import UserApi from '../../../api/userApi'
 import TopicApi from '../../../api/TopicApi'
 
 const InviteMember = (props) => {
+    const userId = useSelector((state) => state.user.value)
+
     const [loading, setLoading] = useState(false)
     const [value, setValue] = useState([])
     const [valueError, setValueError] = useState(false)
@@ -47,6 +50,13 @@ const InviteMember = (props) => {
                         return
                     } else {
                         try {
+                            props.socket.emit(
+                                'invite',
+                                props.boardId,
+                                thisUser.user.user_id,
+                                userId.user_id
+                            )
+
                             const res = await TopicApi.addMemeber(
                                 props.boardId,
                                 thisUser.user.user_id

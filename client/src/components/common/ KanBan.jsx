@@ -48,7 +48,6 @@ const KanBan = (props) => {
 
                 navigate('/')
             } catch (error) {
-                console.log(error)
                 toast.current.show({
                     severity: 'warn',
                     summary: 'Rejected',
@@ -101,7 +100,6 @@ const KanBan = (props) => {
         const getUsers = async () => {
             try {
                 const res = await TopicApi.getAllusers(thisBoardId.boardId)
-                console.log('res', res)
                 const newObjects = res.data.users.map((obj) => ({
                     id: obj.user_id,
                     name: obj.username,
@@ -207,7 +205,6 @@ const KanBan = (props) => {
                 topicId: props.topicId,
             })
 
-            console.log(res)
             setediting(false)
         } catch (err) {}
     }
@@ -244,6 +241,7 @@ const KanBan = (props) => {
                 onVisble={() => setInviteMemberModal(false)}
                 topicId={props.topicId}
                 boardId={boardId}
+                socket={props.socket}
             />
             <AddNewTask
                 visible={NewBoardModal}

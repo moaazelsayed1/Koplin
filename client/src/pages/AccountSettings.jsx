@@ -6,12 +6,10 @@ import { Button } from 'primereact/button'
 import UserApi from '../api/userApi'
 const AccountSettings = () => {
     const user = useSelector((state) => state.user.value)
-    console.log(user)
     const [loading, setloading] = useState(false)
     const [image, setimage] = useState([user.photo])
     const [name, setName] = useState(user.username)
     const [email, setEmail] = useState(user.email)
-    console.log(name)
     const onImageChange = async (e) => {
         setimage(URL.createObjectURL(e.target.files[0]))
     }
@@ -33,7 +31,6 @@ const AccountSettings = () => {
             window.location.reload()
         } catch (err) {
             setloading(false)
-            console.log(err)
         }
     }
 

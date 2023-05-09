@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
 import { FileUpload } from 'primereact/fileupload'
 import { OverlayPanel } from 'primereact/overlaypanel'
-
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
 import AddNewTopic from './modals/AddNewTopic'
@@ -21,7 +20,12 @@ import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
 import { setUser } from '../../redux/features/userSlice'
 import TreeSkeleton from '../Skeletons/TreeSkeleton'
+import {
+    setNotifications,
+    fetchNotificationsAsync,
+} from '../../redux/features/notificationSlice'
 const SideBar = (props) => {
+    fetchNotificationsAsync()
     const op = useRef(null)
     const { boardId } = useParams()
     const navigate = useNavigate()
@@ -32,6 +36,10 @@ const SideBar = (props) => {
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
+
+    useEffect(() => {
+        dispatch(fetchNotificationsAsync())
+    }, [])
 
     useEffect(() => {
         if (!boardId) {
@@ -51,6 +59,18 @@ const SideBar = (props) => {
     const [addBoardtoTopic, setaddBoardtoTopic] = useState(false)
 
     let mappedNodes = []
+    let notificationList = useSelector((state) => state.notification.value)
+
+    useEffect(() => {
+        props.socket.on('notification', (response) => {
+            notificationList = [...notificationList, response.message]
+            dispatch(setNotifications(notificationList))
+        })
+
+        props.socket.on('error', (response) => {
+            console.log('Error from server:', response)
+        })
+    }, [props.socket])
 
     // Getting Topics and Boards
     useEffect(() => {
@@ -367,7 +387,9 @@ const SideBar = (props) => {
                                 </p>
                             </div>
                             <div className=" border-b pl-2 pr-6 py-4">
-                                <p>Mohamed added you to this boards</p>
+                                {notificationList.map((notification, index) => (
+                                    <p key={index}>{notification}</p>
+                                ))}
                             </div>
                         </OverlayPanel>
                     </div>

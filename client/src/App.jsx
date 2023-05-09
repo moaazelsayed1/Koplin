@@ -24,8 +24,8 @@ import { useSelector } from 'react-redux'
 const socket = io.connect('http://localhost:3000')
 
 function App() {
+    socket.on('notification', (response) => {})
     const userId = useSelector((state) => state.user.value)
-    console.log(userId.user_id)
     if (userId.user_id) socket.emit('join', userId.user_id)
 
     return (
@@ -39,7 +39,10 @@ function App() {
                 <Route path="/" element={<AppLayout socket={socket} />}>
                     <Route index element={<Home />} />
                     <Route path="boards" element={<Home />} />
-                    <Route path="boards/:boardId" element={<Board />} />
+                    <Route
+                        path="boards/:boardId"
+                        element={<Board socket={socket} />}
+                    />
                     <Route path="account" element={<AccountSettings />} />
                 </Route>
             </Routes>
