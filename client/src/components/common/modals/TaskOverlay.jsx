@@ -50,10 +50,9 @@ const TaskOverlay = (props) => {
         setAssignee(props.task.assignee)
         setDue(props.task.due_date)
     }, [props.task])
-
     const SubmitHandler = async () => {
         try {
-            const res = await TaskApi.updateTask(props.boardId, task.task_id, {
+            const res = await TaskApi.updateTask(task.board_id, task.task_id, {
                 position: `${task.position}`,
                 task_title: `${title}`,
                 task_description: `${description}`,
@@ -82,8 +81,8 @@ const TaskOverlay = (props) => {
         try {
             props.onDelete(props.task.task_id)
             props.onHide()
-            res = TaskApi.delete(props.task.board_id, props.task.task_id)
-        } catch {}
+            const res = TaskApi.delete(task.board_id, props.task.task_id)
+        } catch (err) {}
     }
 
     return (

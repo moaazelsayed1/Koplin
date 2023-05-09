@@ -19,6 +19,7 @@ import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup me
 import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
 import { setUser } from '../../redux/features/userSlice'
+import TreeSkeleton from '../Skeletons/TreeSkeleton'
 const SideBar = () => {
     const { boardId } = useParams()
     const navigate = useNavigate()
@@ -52,7 +53,7 @@ const SideBar = () => {
     // Getting Topics and Boards
     useEffect(() => {
         const getTopics = async () => {
-            let retries = 3
+            let retries = 1
             let success = false
             while (retries > 0 && !success) {
                 try {
@@ -60,6 +61,14 @@ const SideBar = () => {
                     const finres = res.data.topics
                         .filter((topic) => topic !== null)
                         .sort((a, b) => a.topic_id - b.topic_id)
+                    let boardsHere = []
+
+                    for (let item of finres) {
+                        let topic_id = item.topic_id
+                        const thisTopic = await getBoards(topic_id)
+                        boardsHere = [...boardsHere, ...thisTopic]
+                    }
+                    dispatch(setBoards(boardsHere))
                     dispatch(setTopics(finres))
                     success = true
                 } catch (error) {
@@ -68,13 +77,14 @@ const SideBar = () => {
             }
         }
 
-        const getBoards = async () => {
+        const getBoards = async (topicid) => {
             try {
-                const res = await BoardApi.getAll()
-                const boardsres = res.data.data.sort(
+                const res = await BoardApi.getTopicBoard(topicid)
+
+                const boardsres = res.data.boards.sort(
                     (a, b) => a.board_id - b.board_id
                 )
-                dispatch(setBoards(boardsres))
+                return boardsres
             } catch (error) {}
         }
 
@@ -111,7 +121,7 @@ const SideBar = () => {
             }
         }
 
-        if (topics.length && boards.length) {
+        if (topics.length || boards.length) {
             fillData()
         }
     }, [topics, boards, navigate])
@@ -145,6 +155,9 @@ const SideBar = () => {
             dispatch(setTopics([]))
             dispatch(setBoards([]))
             localStorage.removeItem('token')
+            dispatch(setBoards([]))
+            dispatch(setTopics([]))
+
             navigate('/login')
         } catch (error) {}
     }
@@ -357,18 +370,22 @@ const SideBar = () => {
                         </button>
 
                         <div className=" flex justify-content-center">
-                            <Tree
-                                onSelect={onSelect}
-                                selectionMode="single"
-                                selectionKeys={selectedKey}
-                                expandedKeys={expandedKeys}
-                                onSelectionChange={(e) =>
-                                    setSelectedKey(e.value)
-                                }
-                                value={nodes ? nodes : []}
-                                nodeTemplate={nodeTemplate}
-                                className="w-full md:w-30rem"
-                            />
+                            {!nodes || !topics.length ? (
+                                <TreeSkeleton />
+                            ) : (
+                                <Tree
+                                    onSelect={onSelect}
+                                    selectionMode="single"
+                                    selectionKeys={selectedKey}
+                                    expandedKeys={expandedKeys}
+                                    onSelectionChange={(e) =>
+                                        setSelectedKey(e.value)
+                                    }
+                                    value={nodes ? nodes : []}
+                                    nodeTemplate={nodeTemplate}
+                                    className="w-full md:w-30rem"
+                                />
+                            )}
                         </div>
                     </div>
 

@@ -1,5 +1,5 @@
 // REACT
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Suspense } from 'react'
 import { setCashs } from '../../redux/features/cashSlice'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -39,7 +39,6 @@ const KanBan = (props) => {
     const [editing, setediting] = useState(false)
     const [newBoardName, setnewBoardName] = useState(`${props.title}`)
     const cashes = useSelector((state) => state.cash.value)
-    console.log('cashe', cashes)
     const [inviteMemberModal, setInviteMemberModal] = useState(false)
     const [visibleRight, setVisibleRight] = useState(false)
     const deletetheboard = (event) => {
@@ -101,7 +100,8 @@ const KanBan = (props) => {
 
         const getUsers = async () => {
             try {
-                const res = await TopicApi.getAllusers(props.topicId)
+                const res = await TopicApi.getAllusers(thisBoardId.boardId)
+                console.log('res', res)
                 const newObjects = res.data.users.map((obj) => ({
                     id: obj.user_id,
                     name: obj.username,
@@ -140,7 +140,6 @@ const KanBan = (props) => {
 
         const destinationColIndex = destination.droppableId
 
-        console.log(source)
         const sourceCol = data.filter(
             (task) => task.label === `${sourceColIndex}`
         )
@@ -260,7 +259,7 @@ const KanBan = (props) => {
                     {!editing ? (
                         <>
                             <p className="text-2xl font-semibold text-stone-900 mr-3">
-                                {newBoardName}
+                                {props.title}
                             </p>
                             <Tooltip target=".pi-pencil" />
                             <i
