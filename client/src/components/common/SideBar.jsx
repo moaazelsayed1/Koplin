@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
 import { FileUpload } from 'primereact/fileupload'
+import { OverlayPanel } from 'primereact/overlaypanel'
 
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
@@ -20,7 +21,8 @@ import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
 import { setUser } from '../../redux/features/userSlice'
 import TreeSkeleton from '../Skeletons/TreeSkeleton'
-const SideBar = () => {
+const SideBar = (props) => {
+    const op = useRef(null)
     const { boardId } = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -346,8 +348,29 @@ const SideBar = () => {
                 onFinis={AddTheNewTopic}
             />
             <div className="flex flex-col h-screen sticky top-0 w-64 bg-white border-r px-4">
-                <div className="flex items-center justify-start h-14  mt-2 mb-4 ">
+                <div className="flex justify-between items-center  h-14  mt-2 mb-4 ">
                     <img src={fullLogo} alt="logo" className="h-[32px]" />
+                    <div className="card flex justify-content-center">
+                        <Button
+                            rounded
+                            outlined
+                            size="small"
+                            className="!w-2 !h-9"
+                            type="button"
+                            icon="pi pi-bell"
+                            onClick={(e) => op.current.toggle(e)}
+                        />
+                        <OverlayPanel ref={op}>
+                            <div className="flex gap-0 w-64  mb-4">
+                                <p className=" w-auto text-sm font-semibold">
+                                    Notifications
+                                </p>
+                            </div>
+                            <div className=" border-b pl-2 pr-6 py-4">
+                                <p>Mohamed added you to this boards</p>
+                            </div>
+                        </OverlayPanel>
+                    </div>
                 </div>
                 <div className="flex flex-col justify-between h-full min-h-max">
                     <div className="grow">
