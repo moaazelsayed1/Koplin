@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
         console.log(`Notification sent to user ${invitedUserId}`)
       })
       .catch((error) => {
+        io.to(invitingUserId).emit('error', error)
         console.log(`Error sending board invitation: ${error}`)
       })
   })
