@@ -5,6 +5,8 @@ import { FileUpload } from 'primereact/fileupload'
 import { OverlayPanel } from 'primereact/overlaypanel'
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
+import { Badge } from 'primereact/badge'
+
 import AddNewTopic from './modals/AddNewTopic'
 import TopicApi from '../../api/TopicApi'
 import BoardApi from '../../api/BoardApi'
@@ -36,10 +38,15 @@ const SideBar = (props) => {
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
+    const [localNotificationList, setLocalNotificationList] = useState([])
+    console.log('localNotificationList:', localNotificationList)
+    let notificationList = useSelector((state) => state.notification.value)
+    const reversedList = [...notificationList].reverse()
 
+    const [newNotifations, setnewNotifations] = useState(false)
     useEffect(() => {
         dispatch(fetchNotificationsAsync())
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if (!boardId) {
@@ -59,18 +66,19 @@ const SideBar = (props) => {
     const [addBoardtoTopic, setaddBoardtoTopic] = useState(false)
 
     let mappedNodes = []
-    let notificationList = useSelector((state) => state.notification.value)
 
     useEffect(() => {
-        props.socket.on('notification', (response) => {
-            notificationList = [...notificationList, response.message]
-            dispatch(setNotifications(notificationList))
-        })
+        const handleNotification = (response) => {
+            dispatch(setNotifications([...notificationList, response.message]))
+            setnewNotifations(true)
+        }
+
+        props.socket.on('notification', handleNotification)
 
         props.socket.on('error', (response) => {
             console.log('Error from server:', response)
         })
-    }, [props.socket])
+    }, [props.socket, dispatch, localNotificationList, notificationList])
 
     // Getting Topics and Boards
     useEffect(() => {
@@ -341,6 +349,12 @@ const SideBar = (props) => {
         })
     }
 
+    const notificationListModal = (e) => {
+        setnewNotifations(false)
+
+        op.current.toggle(e)
+    }
+
     return (
         <>
             {' '}
@@ -370,7 +384,13 @@ const SideBar = (props) => {
             <div className="flex flex-col h-screen sticky top-0 w-64 bg-white border-r px-4">
                 <div className="flex justify-between items-center  h-14  mt-2 mb-4 ">
                     <img src={fullLogo} alt="logo" className="h-[32px]" />
-                    <div className="card flex justify-content-center">
+                    <div className=" relative card flex justify-content-center">
+                        {newNotifations ? (
+                            <Badge
+                                size="large"
+                                className="absolute top-[0] right-[-5px] z-10 !h-4 !w-4 !min-w-0"
+                            ></Badge>
+                        ) : null}
                         <Button
                             rounded
                             outlined
@@ -378,17 +398,46 @@ const SideBar = (props) => {
                             className="!w-2 !h-9"
                             type="button"
                             icon="pi pi-bell"
-                            onClick={(e) => op.current.toggle(e)}
+                            onClick={(e) => notificationListModal(e)}
                         />
                         <OverlayPanel ref={op}>
-                            <div className="flex gap-0 w-64  mb-4">
+                            <div className="flex gap-0  w-72  ">
                                 <p className=" w-auto text-sm font-semibold">
                                     Notifications
                                 </p>
                             </div>
-                            <div className=" border-b pl-2 pr-6 py-4">
-                                {notificationList.map((notification, index) => (
-                                    <p key={index}>{notification}</p>
+                            <div className=" pl-2 pr-4 pt-4 h-96 overflow-auto">
+                                {reversedList.map((notification, index) => (
+                                    <div className="flex flex-row items-center mb-2 border-b w-full border-gray-100 pb-3">
+                                        <i
+                                            className="pi pi-users"
+                                            style={{
+                                                color: 'green',
+                                                fontSize: '1rem',
+                                            }}
+                                        ></i>
+                                        <p
+                                            className="pl-2  text-gray-700"
+                                            key={index}
+                                        >
+                                            <span className="font-bold">
+                                                {notification.split(' ')[0] +
+                                                    ' '}
+                                            </span>
+                                            {notification.slice(
+                                                notification.indexOf(' ') + 1,
+                                                notification.lastIndexOf(' ')
+                                            ) + ' '}
+                                            <span className="font-extrabold">
+                                                {
+                                                    notification.split(' ')[
+                                                        notification.split(' ')
+                                                            .length - 1
+                                                    ]
+                                                }
+                                            </span>
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
                         </OverlayPanel>
