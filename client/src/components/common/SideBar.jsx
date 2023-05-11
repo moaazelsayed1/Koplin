@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
-import { FileUpload } from 'primereact/fileupload'
 import { OverlayPanel } from 'primereact/overlaypanel'
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
@@ -38,8 +37,6 @@ const SideBar = (props) => {
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
-    const [localNotificationList, setLocalNotificationList] = useState([])
-    console.log('localNotificationList:', localNotificationList)
     let notificationList = useSelector((state) => state.notification.value)
     const reversedList = [...notificationList].reverse()
 
@@ -75,10 +72,8 @@ const SideBar = (props) => {
 
         props.socket.on('notification', handleNotification)
 
-        props.socket.on('error', (response) => {
-            console.log('Error from server:', response)
-        })
-    }, [props.socket, dispatch, localNotificationList, notificationList])
+        props.socket.on('error', (response) => {})
+    }, [props.socket, dispatch, notificationList])
 
     // Getting Topics and Boards
     useEffect(() => {
