@@ -2,6 +2,7 @@ import axiosClient from './axiosClient'
 
 const BoardApi = {
     getAll: () => axiosClient.get('boards'),
+    getTopicBoard: (id) => axiosClient.get(`boards/topic/${id}`),
     getOne: (id) => axiosClient.get(`boards/${id}`),
     getTasks: (id) => axiosClient.get(`tasks/board/${id}`),
     create: (id, params) => axiosClient.post(`boards/topic/${id}`, params),

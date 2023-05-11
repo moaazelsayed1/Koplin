@@ -8,7 +8,7 @@ import SideBar from '../common/SideBar'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../redux/features/userSlice'
 
-const AppLayout = () => {
+const AppLayout = (props) => {
     const navigate = useNavigate()
 
     const dispatch = useDispatch()
@@ -31,7 +31,7 @@ const AppLayout = () => {
         <Loading fullHeight />
     ) : (
         <div className="flex  bg-gray-100 m-0">
-            <SideBar className=" bg-black"></SideBar>
+            <SideBar socket={props.socket} className=" bg-black"></SideBar>
             <div className=" bg-slate-200 flex flex-1">
                 <Outlet />
             </div>

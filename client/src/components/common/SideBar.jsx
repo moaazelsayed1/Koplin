@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Avatar } from 'primereact/avatar'
-import { FileUpload } from 'primereact/fileupload'
-
+import { OverlayPanel } from 'primereact/overlaypanel'
 import { fullLogo } from '../../assets'
 import { Button } from 'primereact/button'
+import { Badge } from 'primereact/badge'
+
 import AddNewTopic from './modals/AddNewTopic'
 import TopicApi from '../../api/TopicApi'
 import BoardApi from '../../api/BoardApi'
@@ -19,7 +20,14 @@ import { confirmPopup } from 'primereact/confirmpopup' // To use confirmPopup me
 import AddNewBoard from './modals/AddNewBoard'
 import UserApi from '../../api/userApi'
 import { setUser } from '../../redux/features/userSlice'
-const SideBar = () => {
+import TreeSkeleton from '../Skeletons/TreeSkeleton'
+import {
+    setNotifications,
+    fetchNotificationsAsync,
+} from '../../redux/features/notificationSlice'
+const SideBar = (props) => {
+    fetchNotificationsAsync()
+    const op = useRef(null)
     const { boardId } = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -29,6 +37,13 @@ const SideBar = () => {
     const [nodes, setNodes] = useState([])
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
+    let notificationList = useSelector((state) => state.notification.value)
+    const reversedList = [...notificationList].reverse()
+
+    const [newNotifations, setnewNotifations] = useState(false)
+    useEffect(() => {
+        dispatch(fetchNotificationsAsync())
+    }, [dispatch])
 
     useEffect(() => {
         if (!boardId) {
@@ -49,10 +64,21 @@ const SideBar = () => {
 
     let mappedNodes = []
 
+    useEffect(() => {
+        const handleNotification = (response) => {
+            dispatch(setNotifications([...notificationList, response.message]))
+            setnewNotifations(true)
+        }
+
+        props.socket.on('notification', handleNotification)
+
+        props.socket.on('error', (response) => {})
+    }, [props.socket, dispatch, notificationList])
+
     // Getting Topics and Boards
     useEffect(() => {
         const getTopics = async () => {
-            let retries = 3
+            let retries = 1
             let success = false
             while (retries > 0 && !success) {
                 try {
@@ -60,6 +86,14 @@ const SideBar = () => {
                     const finres = res.data.topics
                         .filter((topic) => topic !== null)
                         .sort((a, b) => a.topic_id - b.topic_id)
+                    let boardsHere = []
+
+                    for (let item of finres) {
+                        let topic_id = item.topic_id
+                        const thisTopic = await getBoards(topic_id)
+                        boardsHere = [...boardsHere, ...thisTopic]
+                    }
+                    dispatch(setBoards(boardsHere))
                     dispatch(setTopics(finres))
                     success = true
                 } catch (error) {
@@ -68,13 +102,14 @@ const SideBar = () => {
             }
         }
 
-        const getBoards = async () => {
+        const getBoards = async (topicid) => {
             try {
-                const res = await BoardApi.getAll()
-                const boardsres = res.data.data.sort(
+                const res = await BoardApi.getTopicBoard(topicid)
+
+                const boardsres = res.data.boards.sort(
                     (a, b) => a.board_id - b.board_id
                 )
-                dispatch(setBoards(boardsres))
+                return boardsres
             } catch (error) {}
         }
 
@@ -111,7 +146,7 @@ const SideBar = () => {
             }
         }
 
-        if (topics.length && boards.length) {
+        if (topics.length || boards.length) {
             fillData()
         }
     }, [topics, boards, navigate])
@@ -145,6 +180,9 @@ const SideBar = () => {
             dispatch(setTopics([]))
             dispatch(setBoards([]))
             localStorage.removeItem('token')
+            dispatch(setBoards([]))
+            dispatch(setTopics([]))
+
             navigate('/login')
         } catch (error) {}
     }
@@ -306,6 +344,12 @@ const SideBar = () => {
         })
     }
 
+    const notificationListModal = (e) => {
+        setnewNotifations(false)
+
+        op.current.toggle(e)
+    }
+
     return (
         <>
             {' '}
@@ -333,8 +377,66 @@ const SideBar = () => {
                 onFinis={AddTheNewTopic}
             />
             <div className="flex flex-col h-screen sticky top-0 w-64 bg-white border-r px-4">
-                <div className="flex items-center justify-start h-14  mt-2 mb-4 ">
+                <div className="flex justify-between items-center  h-14  mt-2 mb-4 ">
                     <img src={fullLogo} alt="logo" className="h-[32px]" />
+                    <div className=" relative card flex justify-content-center">
+                        {newNotifations ? (
+                            <Badge
+                                size="large"
+                                className="absolute top-[0] right-[-5px] z-10 !h-4 !w-4 !min-w-0"
+                            ></Badge>
+                        ) : null}
+                        <Button
+                            rounded
+                            outlined
+                            size="small"
+                            className="!w-2 !h-9"
+                            type="button"
+                            icon="pi pi-bell"
+                            onClick={(e) => notificationListModal(e)}
+                        />
+                        <OverlayPanel ref={op}>
+                            <div className="flex gap-0  w-72  ">
+                                <p className=" w-auto text-sm font-semibold">
+                                    Notifications
+                                </p>
+                            </div>
+                            <div className=" pl-2 pr-4 pt-4 h-96 overflow-auto">
+                                {reversedList.map((notification, index) => (
+                                    <div className="flex flex-row items-center mb-2 border-b w-full border-gray-100 pb-3">
+                                        <i
+                                            className="pi pi-users"
+                                            style={{
+                                                color: 'green',
+                                                fontSize: '1rem',
+                                            }}
+                                        ></i>
+                                        <p
+                                            className="pl-2  text-gray-700"
+                                            key={index}
+                                        >
+                                            <span className="font-bold">
+                                                {notification.split(' ')[0] +
+                                                    ' '}
+                                            </span>
+                                            {notification.slice(
+                                                notification.indexOf(' ') + 1,
+                                                notification.lastIndexOf(' ')
+                                            ) + ' '}
+                                            <span className="font-extrabold">
+                                                {
+                                                    notification.split(' ')[
+                                                        notification.split(' ')
+                                                            .length - 1
+                                                    ]
+                                                }
+                                            </span>
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </OverlayPanel>
+                    </div>
                 </div>
                 <div className="flex flex-col justify-between h-full min-h-max">
                     <div className="grow">
@@ -357,18 +459,22 @@ const SideBar = () => {
                         </button>
 
                         <div className=" flex justify-content-center">
-                            <Tree
-                                onSelect={onSelect}
-                                selectionMode="single"
-                                selectionKeys={selectedKey}
-                                expandedKeys={expandedKeys}
-                                onSelectionChange={(e) =>
-                                    setSelectedKey(e.value)
-                                }
-                                value={nodes ? nodes : []}
-                                nodeTemplate={nodeTemplate}
-                                className="w-full md:w-30rem"
-                            />
+                            {!nodes || !topics.length ? (
+                                <TreeSkeleton />
+                            ) : (
+                                <Tree
+                                    onSelect={onSelect}
+                                    selectionMode="single"
+                                    selectionKeys={selectedKey}
+                                    expandedKeys={expandedKeys}
+                                    onSelectionChange={(e) =>
+                                        setSelectedKey(e.value)
+                                    }
+                                    value={nodes ? nodes : []}
+                                    nodeTemplate={nodeTemplate}
+                                    className="w-full md:w-30rem"
+                                />
+                            )}
                         </div>
                     </div>
 

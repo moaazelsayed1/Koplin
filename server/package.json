@@ -36,7 +36,8 @@
     "nodemailer": "^6.9.1",
     "pg": "^8.10.0",
     "sequelize": "^6.30.0",
-    "sharp": "^0.32.0"
+    "sharp": "^0.32.0",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

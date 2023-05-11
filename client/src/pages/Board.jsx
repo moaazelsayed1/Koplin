@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import BoardApi from '../api/BoardApi'
 import KanBan from '../components/common/ KanBan'
 
-const Board = () => {
+const Board = (props) => {
     const { boardId } = useParams()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -38,6 +38,7 @@ const Board = () => {
     return (
         <div>
             <KanBan
+                socket={props.socket}
                 data={lists}
                 boardId={boardId}
                 title={title}

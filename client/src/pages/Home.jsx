@@ -131,7 +131,9 @@ const Home = (props) => {
     }
 
     const [taskShown, settaskShown] = useState({})
-    const overlayTaskHandler = (task) => {
+    const overlayTaskHandler = async (task) => {
+        setboardId(task.board_id)
+
         settaskShown(task)
         setVisibleRight(true)
     }
@@ -555,6 +557,7 @@ const Home = (props) => {
                 task={taskShown}
                 onDelete={onDeleteTaskHandler}
                 onFinis={onEditTaskHandler}
+                key={boardId + 3}
             />
         </div>
     )
