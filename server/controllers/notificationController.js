@@ -55,6 +55,28 @@ exports.getNotificationsByUser = catchAsync(async (req, res, next) => {
   })
 })
 
+exports.markSeen = catchAsync(async (req, res, next) => {
+  const receiverId = req.user.user_id
+  const notificationIds = req.body.notificationIds
+
+  if (!notificationIds) {
+    return next(new AppError('No notification ids provided', 400))
+  }
+
+  const updatedNotifications = await Notification.update(
+    { isRead: true },
+    {
+      where: {
+        receiverId,
+        id: notificationIds,
+      },
+    }
+  )
+
+  res
+    .status(200)
+    .json({ success: true, message: 'Notifications marked as seen' })
+})
 exports.getAllNotifications = Factory.getAll(Notification)
 
 exports.createNotification = Factory.createOne(Notification)

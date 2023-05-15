@@ -21,6 +21,12 @@ router.get(
   notificationController.getNotificationsByUser
 )
 
+router.post(
+  '/mark-seen',
+  authController.protect,
+  notificationController.markSeen
+)
+
 router.get('/', notificationController.getAllNotifications)
 
 router.get('/:id', notificationController.getNotificationById)
