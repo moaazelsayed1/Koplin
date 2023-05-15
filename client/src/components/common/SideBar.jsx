@@ -25,6 +25,7 @@ import {
     setNotifications,
     fetchNotificationsAsync,
 } from '../../redux/features/notificationSlice'
+import NotificationsApi from '../../api/notificationsApi'
 const SideBar = (props) => {
     fetchNotificationsAsync()
     const op = useRef(null)
@@ -38,7 +39,7 @@ const SideBar = (props) => {
     const [selectedKey, setSelectedKey] = useState(`${boardId}-1`)
     const [expandedKeys, setExpandedKeys] = useState({})
     let notificationList = useSelector((state) => state.notification.value)
-    const reversedList = [...notificationList].reverse()
+    const reversedList = [...notificationList]
 
     const [newNotifations, setnewNotifations] = useState(false)
     useEffect(() => {
@@ -64,6 +65,18 @@ const SideBar = (props) => {
 
     let mappedNodes = []
 
+    const [allNotification, setallNotification] = useState([])
+    const [allNotificationID, setallNotificationID] = useState([])
+    const setReadNotification = async () => {
+        try {
+            const res = await NotificationsApi.getMy()
+            const x = res.data.data
+            setallNotification(x)
+            const y = x.map((item) => item.id)
+            setallNotificationID(y)
+        } catch (error) {}
+    }
+
     useEffect(() => {
         const handleNotification = (response) => {
             dispatch(setNotifications([...notificationList, response.message]))
@@ -72,10 +85,23 @@ const SideBar = (props) => {
 
         props.socket.on('notification', handleNotification)
 
-        props.socket.on('error', (response) => {})
+        props.socket.on('error', (response) => {
+            console.log(response)
+            console.log('error')
+        })
+        setReadNotification()
     }, [props.socket, dispatch, notificationList])
 
     // Getting Topics and Boards
+    useEffect(() => {
+        for (let i = 0; i < allNotification.length; i++) {
+            if (allNotification[i].isRead === false) {
+                setnewNotifations(true)
+                break
+            }
+        }
+    }, [navigate, allNotification, props.socket, dispatch, notificationList])
+
     useEffect(() => {
         const getTopics = async () => {
             let retries = 1
@@ -344,10 +370,17 @@ const SideBar = (props) => {
         })
     }
 
-    const notificationListModal = (e) => {
+    const notificationListModal = async (e) => {
         setnewNotifations(false)
-
         op.current.toggle(e)
+        if (newNotifations) {
+            try {
+                const res = await NotificationsApi.setRead({
+                    notificationIds: [...allNotificationID],
+                })
+                setallNotificationID([])
+            } catch (error) {}
+        }
     }
 
     return (
@@ -401,7 +434,7 @@ const SideBar = (props) => {
                                     Notifications
                                 </p>
                             </div>
-                            <div className=" pl-2 pr-4 pt-4 h-96 overflow-auto">
+                            <div className=" pl-2 pr-4 pt-4 h-62 overflow-auto">
                                 {reversedList.map((notification, index) => (
                                     <div className="flex flex-row items-center mb-2 border-b w-full border-gray-100 pb-3">
                                         <i
