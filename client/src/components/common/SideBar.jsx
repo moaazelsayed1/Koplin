@@ -86,8 +86,15 @@ const SideBar = (props) => {
         props.socket.on('notification', handleNotification)
 
         props.socket.on('error', (response) => {
-            console.log(response)
-            console.log('error')
+            const show = () => {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Oops!',
+                    detail: `${response.message}`,
+                    life: 3000,
+                })
+            }
+            show()
         })
         setReadNotification()
     }, [props.socket, dispatch, notificationList])
@@ -492,22 +499,18 @@ const SideBar = (props) => {
                         </button>
 
                         <div className=" flex justify-content-center">
-                            {!nodes || !topics.length ? (
-                                <TreeSkeleton />
-                            ) : (
-                                <Tree
-                                    onSelect={onSelect}
-                                    selectionMode="single"
-                                    selectionKeys={selectedKey}
-                                    expandedKeys={expandedKeys}
-                                    onSelectionChange={(e) =>
-                                        setSelectedKey(e.value)
-                                    }
-                                    value={nodes ? nodes : []}
-                                    nodeTemplate={nodeTemplate}
-                                    className="w-full md:w-30rem"
-                                />
-                            )}
+                            <Tree
+                                onSelect={onSelect}
+                                selectionMode="single"
+                                selectionKeys={selectedKey}
+                                expandedKeys={expandedKeys}
+                                onSelectionChange={(e) =>
+                                    setSelectedKey(e.value)
+                                }
+                                value={nodes ? nodes : []}
+                                nodeTemplate={nodeTemplate}
+                                className="w-full md:w-30rem"
+                            />
                         </div>
                     </div>
 

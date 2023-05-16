@@ -11,7 +11,8 @@ import TopicApi from '../../../api/TopicApi'
 
 const InviteMember = (props) => {
     const userId = useSelector((state) => state.user.value)
-
+    const cashes = useSelector((state) => state.cash.value)
+    const names = cashes.map((item) => item.name)
     const [loading, setLoading] = useState(false)
     const [value, setValue] = useState([])
     const [valueError, setValueError] = useState(false)
@@ -38,6 +39,7 @@ const InviteMember = (props) => {
                     if (thisUser.results === 0) {
                         const suc = `${item} is not a user`
                         setLoading(false)
+
                         const show = () => {
                             toast.current.show({
                                 severity: 'warn',
@@ -64,17 +66,18 @@ const InviteMember = (props) => {
                         } catch (err) {}
                     }
                     setLoading(false)
-
-                    const suc = 'user added successfully'
-                    const show = () => {
-                        toast.current.show({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: `${suc}`,
-                            life: 3000,
-                        })
+                    if (!names.includes(item)) {
+                        const suc = 'user added successfully'
+                        const show = () => {
+                            toast.current.show({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: `${suc}`,
+                                life: 3000,
+                            })
+                        }
+                        show()
                     }
-                    show()
                     setValue([])
                     props.onVisble()
                 } catch (err) {

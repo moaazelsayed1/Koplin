@@ -257,7 +257,7 @@ const KanBan = (props) => {
                     {!editing ? (
                         <>
                             <p className="text-2xl font-semibold text-stone-900 mr-3">
-                                {props.title}
+                                {newBoardName}
                             </p>
                             <Tooltip target=".pi-pencil" />
                             <i
