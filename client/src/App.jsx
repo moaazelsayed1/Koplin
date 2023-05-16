@@ -25,8 +25,8 @@ const socket = io.connect('http://localhost:3000')
 
 function App() {
     socket.on('notification', (response) => {})
-    const userId = useSelector((state) => state.user.value)
-    if (userId.user_id) socket.emit('join', userId.user_id)
+    const userId = useSelector((state) => state.user?.value)
+    if (userId?.user_id) socket.emit('join', userId?.user_id)
 
     return (
         <BrowserRouter>
