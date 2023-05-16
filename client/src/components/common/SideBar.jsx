@@ -95,8 +95,6 @@ const SideBar = (props) => {
                 })
             }
             show()
-            console.log(response)
-            console.log('error')
         })
         setReadNotification()
     }, [props.socket, dispatch, notificationList])
