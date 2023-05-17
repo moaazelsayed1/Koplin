@@ -15,6 +15,7 @@ https://github.com/Hazemmahdyx/Koplin/assets/88671390/b8d8af8a-80c7-4dff-b9f0-dc
 - Edit tasks and move them between different stages (todo, in progress, review, completed)
 - Invite friends and collaborate on projects
 - Edit profile information including username, email, and profile image
+- Notify users when they are added to a board
 
 
 
@@ -43,6 +44,7 @@ https://github.com/Hazemmahdyx/Koplin/assets/88671390/b8d8af8a-80c7-4dff-b9f0-dc
 - Multer for handling file uploads
 - Canvas for generating and manipulating images in Node.js
 - Cors for enabling Cross-Origin Resource Sharing (CORS)
+- Socket.IO for real-time notifications
 
 ### Installation
 To get started with Koplin, follow these steps:
