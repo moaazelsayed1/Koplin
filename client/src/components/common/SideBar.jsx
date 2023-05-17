@@ -79,8 +79,17 @@ const SideBar = (props) => {
 
     useEffect(() => {
         const handleNotification = (response) => {
-            dispatch(setNotifications([...notificationList, response.message]))
+            dispatch(setNotifications([response.message, ...notificationList]))
             setnewNotifations(true)
+            const showAdded = () => {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'You have been added to a board!',
+                    detail: `${response.message}`,
+                    life: 2000,
+                })
+            }
+            showAdded()
         }
 
         props.socket.on('notification', handleNotification)
